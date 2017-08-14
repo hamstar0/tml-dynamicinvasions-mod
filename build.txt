@@ -1,7 +1,7 @@
 author = hamstar
-version = 0.8.0.1
+version = 0.8.0.2
 displayName = Dynamic Invasions
 modReferences = HamstarHelpers
 buildIgnore = *.csproj, *.user, obj\*, bin\*, .vs\*
 includePDB = true
-homepage = https://forums.terraria.org/index.php?threads/nihilism-empties-the-game.60333/
+homepage = https://forums.terraria.org/index.php?threads/dynamic-invasions.61060/

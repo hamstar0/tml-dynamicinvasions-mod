@@ -1,6 +1,5 @@
 Implements dynamic mob invasions.
-- Use a craftable Cross-Dimensional Aggregator to summon invasions
-- Cross-Dimensional Aggregator recipe:
+- Craft a Cross-Dimensional Aggregator to summon invasions:
   - 1x Magic/Ice Mirror
   - 1x Dark Shard
   - 1x Light Shard
