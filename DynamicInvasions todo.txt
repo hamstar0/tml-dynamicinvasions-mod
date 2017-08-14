@@ -1,0 +1,34 @@
+Future
+-	Wave-based invasions
+-	Equippable standards
+-	Placeable standards
+v1.0
+-	Implement auto-invasions
+v0.9
+-	Add sky FX
+-	Implement midbosses (via boss trophies)
+-	Implement loot rate modifiers
+v0.8
+-	Release
+-	@Test multiplayer
+
+-	Implement invasion progress
+-	Sync invasion
+-	Set eternia crystal cost to increase per summon item
+-	Add invasion summon sound
+-	F&T
+	-	Get invasion icon
+	-	Fix invasion display layer
+	-	Fix music
+	-	Fix displaying invasion progress
+	-	Fix detecting correct consumable item (item groups not working...?)
+	-	Fix spawn rates being generalized (make overwhelming weights for invasion npcs)
+	-	Fix invasion beginning too soon
+	-	Fix music not playing on invasion begin
+-	Implement custom invasion
+-	Create customizeable summon item ("Jury-Rigged Interdimensional Translocator")
+	-	Implement invasion event invoking
+	-	Implement crafting
+	-	Create sprite
+	-	Define item
+-	Setup project
