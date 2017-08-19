@@ -32,7 +32,7 @@ namespace DynamicInvasions {
 
 		public override void Load() {
 			var hamhelpmod = ModLoader.GetMod( "HamstarHelpers" );
-			var min_ver = new Version( 1, 0, 17 )
+			var min_ver = new Version( 1, 0, 17 );
 			if( hamhelpmod.Version < min_ver ) {
 				throw new Exception( "Hamstar's Helpers must be version "+ min_ver.ToString()+" or greater." );
 			}
