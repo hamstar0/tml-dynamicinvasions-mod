@@ -48,7 +48,7 @@ namespace DynamicInvasions.Items {
 				return false;
 			}
 
-			if( !modworld.Logic.CanStartInvasion( mymod, item_info ) ) {
+			if( !modworld.Logic.CanStartInvasion( mymod ) ) {
 				Main.NewText( "Signal disrupted by mass of surface activity.", Main.errorColor );
 				return false;
 			}
@@ -140,12 +140,16 @@ namespace DynamicInvasions.Items {
 			var item_info = this.item.GetGlobalItem<AggregatorItemInfo>();
 			int fuel_cost = this.GetFuelCost();
 
+			if( !item_info.IsInitialized ) {
+				return false;
+			}
+
 			// Not enough fuel?
 			if( fuel_cost > fuel_item.stack ) {
 				return false;
 			}
 			
-			return modworld.Logic.CanStartInvasion( mymod, item_info );
+			return modworld.Logic.CanStartInvasion( mymod );
 		}
 
 		private void ActivateInvasion( Item fuel_item ) {
@@ -154,13 +158,17 @@ namespace DynamicInvasions.Items {
 			var item_info = this.item.GetGlobalItem<AggregatorItemInfo>();
 			int fuel_cost = this.GetFuelCost();
 
+			if( mymod.IsDebugInfoMode() ) {
+				Main.NewText( "Activating invasion..." );
+			}
+
 			ItemHelpers.ReduceStack( fuel_item, fuel_cost );
 			item_info.Use();
 
 			if( Main.netMode == 0 ) {
 				modworld.Logic.StartInvasion( mymod, item_info.MusicType, item_info.BannerItemTypesToNpcTypes );
 			} else if( Main.netMode == 1 ) {
-				ClientNetProtocol.SendInvasionRequestFromClient( mymod, item_info.MusicType, item_info.BannerItemTypesToNpcTypes );
+				ClientPacketHandlers.SendInvasionRequestFromClient( mymod, item_info.MusicType, item_info.BannerItemTypesToNpcTypes );
 			}
 		}
 	}

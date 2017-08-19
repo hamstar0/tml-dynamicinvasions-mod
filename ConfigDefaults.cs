@@ -3,7 +3,7 @@
 
 namespace DynamicInvasions {
 	public class ConfigurationData {
-		public readonly static Version ConfigVersion = new Version( 0, 8, 0 );
+		public readonly static Version ConfigVersion = new Version( 0, 8, 1 );
 
 
 		public string VersionSinceUpdate = "";
@@ -22,6 +22,8 @@ namespace DynamicInvasions {
 		public int InvasionAddedSizePerStrongPlayer = 40;
 		public int InvasionSpawnRate = 72;
 		public int InvasionSpawnMax = 16;
+
+		public float InvaderLootDropPercentChance = 0.25f;
 
 		public bool CanCraftTrophiesIntoBanners = true;
 

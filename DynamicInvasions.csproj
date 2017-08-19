@@ -54,7 +54,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConfigDefaults.cs" />
-    <Compile Include="Invasion\InvasionInfo.cs" />
+    <Compile Include="Invasion\AutomaticInvasions.cs" />
+    <Compile Include="Invasion\InvasionLogic_Info.cs" />
     <Compile Include="Invasion\InvasionLogic.cs" />
     <Compile Include="DynamicInvasions.cs" />
     <Compile Include="Invasion\InvasionData.cs" />
@@ -63,8 +64,9 @@
     <Compile Include="MyModWorld.cs" />
     <Compile Include="Items\CrossDimensionalAggregatorItem.cs" />
     <Compile Include="Items\AggregatorItemInfo.cs" />
-    <Compile Include="NetProtocol\ClientNetProtocol.cs" />
-    <Compile Include="NetProtocol\ServerNetProtocol.cs" />
+    <Compile Include="NetProtocol\ClientPacketHandlers.cs" />
+    <Compile Include="NetProtocol\NetProtocolTypes.cs" />
+    <Compile Include="NetProtocol\ServerPacketHandlers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

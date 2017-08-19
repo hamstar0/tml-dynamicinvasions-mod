@@ -7,32 +7,25 @@ using Terraria.ModLoader;
 
 
 namespace DynamicInvasions.NetProtocol {
-	public enum ServerNetProtocolTypes : byte {
-		RequestModSettings=0,
-		RequestInvasion,
-		RequestInvasionStatus
-	}
-
-
-	public static class ServerNetProtocol {
+	public static class ServerPacketHandlers {
 		public static void RoutePacket( DynamicInvasions mymod, BinaryReader reader, int player_who ) {
-			ServerNetProtocolTypes protocol = (ServerNetProtocolTypes)reader.ReadByte();
+			NetProtocolTypes protocol = (NetProtocolTypes)reader.ReadByte();
 
 			switch( protocol ) {
-			case ServerNetProtocolTypes.RequestModSettings:
-				if( mymod.IsDebugInfoMode() ) { DebugHelpers.Log( "RouteReceivedServerPackets.RequestModSettings" ); }
-				ServerNetProtocol.ReceiveModSettingsRequestOnServer( mymod, reader, player_who );
+			case NetProtocolTypes.RequestModSettings:
+				if( mymod.IsDebugInfoMode() ) { DebugHelpers.Log( "ServerPacketHandlers.RequestModSettings" ); }
+				ServerPacketHandlers.ReceiveModSettingsRequestOnServer( mymod, reader, player_who );
 				break;
-			case ServerNetProtocolTypes.RequestInvasion:
-				if( mymod.IsDebugInfoMode() ) { DebugHelpers.Log( "RouteReceivedServerPackets.RequestInvasion" ); }
-				ServerNetProtocol.ReceiveInvasionRequestOnServer( mymod, reader, player_who );
+			case NetProtocolTypes.RequestInvasion:
+				if( mymod.IsDebugInfoMode() ) { DebugHelpers.Log( "ServerPacketHandlers.RequestInvasion" ); }
+				ServerPacketHandlers.ReceiveInvasionRequestOnServer( mymod, reader, player_who );
 				break;
-			case ServerNetProtocolTypes.RequestInvasionStatus:
-				if( mymod.IsDebugInfoMode() ) { DebugHelpers.Log( "RouteReceivedServerPackets.RequestInvasion" ); }
-				ServerNetProtocol.ReceiveInvasionStatusRequestOnServer( mymod, reader, player_who );
+			case NetProtocolTypes.RequestInvasionStatus:
+				if( mymod.IsDebugInfoMode() ) { DebugHelpers.Log( "ServerPacketHandlers.RequestInvasionStatus" ); }
+				ServerPacketHandlers.ReceiveInvasionStatusRequestOnServer( mymod, reader, player_who );
 				break;
 			default:
-				if( mymod.IsDebugInfoMode() ) { DebugHelpers.Log( "RouteReceivedServerPackets ...? " + protocol ); }
+				if( mymod.IsDebugInfoMode() ) { DebugHelpers.Log( "ServerPacketHandlers ...? " + protocol ); }
 				break;
 			}
 		}
@@ -49,7 +42,7 @@ namespace DynamicInvasions.NetProtocol {
 
 			ModPacket packet = mymod.GetPacket();
 
-			packet.Write( (byte)ClientNetProtocolTypes.ModSettings );
+			packet.Write( (byte)NetProtocolTypes.ModSettings );
 			packet.Write( (string)mymod.Config.SerializeMe() );
 
 			packet.Send( (int)player.whoAmI );
@@ -61,7 +54,7 @@ namespace DynamicInvasions.NetProtocol {
 
 			ModPacket packet = mymod.GetPacket();
 
-			packet.Write( (byte)ClientNetProtocolTypes.Invasion );
+			packet.Write( (byte)NetProtocolTypes.Invasion );
 			packet.Write( (int)music_type );
 			packet.Write( (string)spawn_info_enc );
 
@@ -75,7 +68,7 @@ namespace DynamicInvasions.NetProtocol {
 			ModPacket packet = mymod.GetPacket();
 			var modworld = mymod.GetModWorld<MyModWorld>();
 
-			packet.Write( (byte)ClientNetProtocolTypes.InvasionStatus );
+			packet.Write( (byte)NetProtocolTypes.InvasionStatus );
 			modworld.Logic.MyNetSend( packet );
 
 			packet.Send( (int)player.whoAmI );
@@ -91,7 +84,7 @@ namespace DynamicInvasions.NetProtocol {
 			// Server only
 			if( Main.netMode != 2 ) { return; }
 
-			ServerNetProtocol.SendModSettingsFromServer( mymod, Main.player[player_who] );
+			ServerPacketHandlers.SendModSettingsFromServer( mymod, Main.player[player_who] );
 		}
 
 		private static void ReceiveInvasionRequestOnServer( DynamicInvasions mymod, BinaryReader reader, int player_who ) {
@@ -109,7 +102,7 @@ namespace DynamicInvasions.NetProtocol {
 				Player player = Main.player[i];
 				if( player == null || !player.active ) { continue; }
 
-				ServerNetProtocol.SendInvasionFromServer( mymod, player, music_type, spawn_info_enc );
+				ServerPacketHandlers.SendInvasionFromServer( mymod, player, music_type, spawn_info_enc );
 			}
 		}
 
@@ -117,7 +110,7 @@ namespace DynamicInvasions.NetProtocol {
 			// Server only
 			if( Main.netMode != 2 ) { return; }
 
-			ServerNetProtocol.SendInvasionStatusFromServer( mymod, Main.player[player_who] );
+			ServerPacketHandlers.SendInvasionStatusFromServer( mymod, Main.player[player_who] );
 		}
 	}
 }

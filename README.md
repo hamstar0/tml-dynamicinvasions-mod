@@ -1,5 +1,4 @@
-# tml-dynamicinvasions-mod
-Implements dynamic mob invasions. Use a craftable Cross-Dimensional Aggregator to summon your own invasions.
+Implements dynamic mob invasions. Craftable a Cross-Dimensional Aggregator to summon your own invasions.
 - Recipe:
   - 1x Magic/Ice Mirror
   - 1x Dark Shard
@@ -8,7 +7,8 @@ Implements dynamic mob invasions. Use a craftable Cross-Dimensional Aggregator t
   - 1x Music Box (recorded); specifies invasion's music
 - The Aggregator requires Eternia Crystals to summon
 - Any combo of mobs and choice of music may be provided
-- Config file: Documents/My Games/Terraria/ModLoader/Mod Configs/Dynamic Invasions Config.json
+- Each invasion summon increases crystal cost
+- Config file: "Documents/My Games/Terraria/ModLoader/Mod Configs/Dynamic Invasions Config.json"
 
 Future plans
 - Automatic (randomized) invasion events.

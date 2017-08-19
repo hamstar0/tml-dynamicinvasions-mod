@@ -6,33 +6,30 @@ using Terraria.Localization;
 
 
 namespace DynamicInvasions.Invasion {
-	abstract class InvasionInfo : InvasionData {
-		protected InvasionInfo() : base() { }
-
-
+	public partial class InvasionLogic {
 		public bool RunProgressBarAnimation() {
-			if( this.InvasionEnrouteDuration > 0 ) {
-				this.InvasionProgressIntroAnimation = 160;
+			if( this.Data.InvasionEnrouteDuration > 0 ) {
+				this.Data.InvasionProgressIntroAnimation = 160;
 			} else {
-				if( !Main.gamePaused && this.InvasionProgressIntroAnimation > 0 ) {
-					--this.InvasionProgressIntroAnimation;
+				if( !Main.gamePaused && this.Data.InvasionProgressIntroAnimation > 0 ) {
+					--this.Data.InvasionProgressIntroAnimation;
 				}
 
-				if( this.InvasionProgressIntroAnimation > 0 ) {
-					this.ProgressMeterIntroZoom = Math.Min( this.ProgressMeterIntroZoom + 0.05f, 1f );
-				} else if( !this.IsInvading ) {
-					this.ProgressMeterIntroZoom = Math.Max( this.ProgressMeterIntroZoom - 0.05f, 0f );
+				if( this.Data.InvasionProgressIntroAnimation > 0 ) {
+					this.Data.ProgressMeterIntroZoom = Math.Min( this.Data.ProgressMeterIntroZoom + 0.05f, 1f );
+				} else if( !this.Data.IsInvading ) {
+					this.Data.ProgressMeterIntroZoom = Math.Max( this.Data.ProgressMeterIntroZoom - 0.05f, 0f );
 				}
 			}
 
-			return this.ProgressMeterIntroZoom > 0f;
+			return this.Data.ProgressMeterIntroZoom > 0f;
 		}
 
 
 		public void DrawProgressBar( SpriteBatch sb ) {
-			float alpha = this.ProgressMeterIntroZoom;
-			int progress = this.InvasionSizeStart - this.InvasionSize;
-			int progress_max = this.InvasionSizeStart;
+			float alpha = this.Data.ProgressMeterIntroZoom;
+			int progress = this.Data.InvasionSizeStart - this.Data.InvasionSize;
+			int progress_max = this.Data.InvasionSizeStart;
 			float progress_percent = MathHelper.Clamp( (float)progress / (float)progress_max, 0.0f, 1f );
 
 			float scale = (float)(0.5 + (double)alpha * 0.5);
@@ -68,16 +65,16 @@ namespace DynamicInvasions.Invasion {
 				sb.Draw( Main.magicPixel, pos2, new Rectangle?( new Rectangle( 0, 0, 1, 1 ) ), Color.Black * alpha, 0.0f, new Vector2( 0.0f, 0.5f ), new Vector2( scale_offset * (1f - progress_percent), y ), SpriteEffects.None, 0.0f );
 			}
 
-			Vector2 str_dim = Main.fontMouseText.MeasureString( this.Label );
+			Vector2 str_dim = Main.fontMouseText.MeasureString( this.Data.Label );
 			float str_x_offset = 120f;
 			if( str_dim.X > 200.0f ) {
 				str_x_offset += str_dim.X - 200f;
 			}
 			Rectangle rectangle = Utils.CenteredRectangle( new Vector2( (float)Main.screenWidth - str_x_offset, (float)(Main.screenHeight - 80) ), (str_dim + new Vector2( (float)(tex.Width + 12), 6f )) * scale );
 
-			Utils.DrawInvBG( sb, rectangle, this.LabelColor );
+			Utils.DrawInvBG( sb, rectangle, this.Data.LabelColor );
 			sb.Draw( tex, rectangle.Left() + Vector2.UnitX * scale * 8f, new Rectangle?(), Color.White * alpha, 0.0f, new Vector2( 0.0f, (float)(tex.Height / 2) ), scale * 0.8f, SpriteEffects.None, 0.0f );
-			Utils.DrawBorderString( sb, this.Label, rectangle.Right() + Vector2.UnitX * scale * -22f, Color.White * alpha, scale * 0.9f, 1f, 0.4f, -1 );
+			Utils.DrawBorderString( sb, this.Data.Label, rectangle.Right() + Vector2.UnitX * scale * -22f, Color.White * alpha, scale * 0.9f, 1f, 0.4f, -1 );
 		}
 
 

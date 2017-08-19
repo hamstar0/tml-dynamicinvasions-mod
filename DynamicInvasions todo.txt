@@ -3,15 +3,22 @@ Future
 -	Equippable standards
 -	Placeable standards
 v1.0
--	Implement auto-invasions
-v0.9
 -	Add sky FX
 -	Implement midbosses (via boss trophies)
+v0.9
+-	Fix multiplayer lag?
+-	Set banner drops from invading mobs lower
+-	Implement auto-invasions
+	-	Generate randomized invasions based on recent kills
+	-	Store chrono-ordered list of npc types killed on a given world
+
+	-	Implement player appraiser (tier estimating)
+	-	Implement NPC appraiser (tier estimating)
+	-	Implement day randomizer
 -	Implement loot rate modifiers
 v0.8
 -	Release
 -	@Test multiplayer
-
 -	Implement invasion progress
 -	Sync invasion
 -	Set eternia crystal cost to increase per summon item

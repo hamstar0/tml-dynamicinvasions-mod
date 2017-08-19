@@ -1,5 +1,4 @@
 ﻿using DynamicInvasions.Invasion;
-using System.IO;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -11,7 +10,8 @@ namespace DynamicInvasions {
 
 
 		public override void Initialize() {
-			this.Logic = new InvasionLogic();
+			var mymod = (DynamicInvasions)this.mod;
+			this.Logic = new InvasionLogic( mymod );
 		}
 
 
@@ -29,20 +29,20 @@ namespace DynamicInvasions {
 			return this.Logic.SaveMe();
 		}
 
-		public override void NetSend( BinaryWriter writer ) {
-			//this.Logic.NetSend( writer );
-		}
+		//public override void NetSend( BinaryWriter writer ) {
+			//this.Logic.GetNetSender()( writer );
+		//}
 
-		public override void NetReceive( BinaryReader reader ) {
-			//this.Logic.NetReceive( reader );
-		}
+		//public override void NetReceive( BinaryReader reader ) {
+			//this.Logic.GetNetReceiver()( reader );
+		//}
 
 
 		public override void PreUpdate() {
 			var mymod = (DynamicInvasions)this.mod;
 			if( !mymod.Config.Data.Enabled ) { return; }
 
-			if( Main.netMode == 2 ) {
+			if( Main.netMode == 2 ) {	// Server
 				this.Logic.Update( mymod );
 			}
 		}

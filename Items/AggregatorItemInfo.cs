@@ -12,7 +12,14 @@ using Terraria.ModLoader.IO;
 namespace DynamicInvasions.Items {
 	class AggregatorItemInfo : GlobalItem {
 		public override bool InstancePerEntity { get { return true; } }
-		
+
+
+		public AggregatorItemInfo() : base() {
+			this.IsInitialized = false;
+			this.MusicType = 0;
+			this.BannerItemTypesToNpcTypes = null;
+			this.Uses = 0;
+		}
 
 		public override GlobalItem Clone( Item item, Item item_clone ) {
 			var clone = (AggregatorItemInfo)base.Clone( item, item_clone );
@@ -28,47 +35,73 @@ namespace DynamicInvasions.Items {
 		}
 
 		public override void Load( Item item, TagCompound tags ) {
+			if( item.type != this.mod.ItemType<CrossDimensionalAggregatorItem>() ) { return; }
+
 			bool is_init = tags.GetBool( "is_init" );
 			int music = tags.GetInt( "music_type" );
-			var list = JsonConfig<List<KeyValuePair<int, ISet<int>>>>.Deserialize( tags.GetString( "spawn_npcs" ) );
 			int uses = tags.GetInt( "uses" );
+			string spawn_npc_enc = tags.GetString( "spawn_npcs" );
 
+			IReadOnlyList<KeyValuePair<int, ISet<int>>> list = null;
+			if( spawn_npc_enc != "" || is_init ) {
+				var raw_list = JsonConfig<List<KeyValuePair<int, ISet<int>>>>.Deserialize( spawn_npc_enc );
+				list = raw_list.AsReadOnly();
+			}
+			
 			this.IsInitialized = is_init;
 			this.MusicType = music;
-			this.BannerItemTypesToNpcTypes = list.AsReadOnly();
+			this.BannerItemTypesToNpcTypes = list;
 			this.Uses = uses;
 		}
 
 		public override TagCompound Save( Item item ) {
-			string spawn_npc_enc = JsonConfig<IReadOnlyList<KeyValuePair<int, ISet<int>>>>.Serialize( this.BannerItemTypesToNpcTypes );
+			if( item.type != this.mod.ItemType<CrossDimensionalAggregatorItem>() ) { return new TagCompound(); }
+
+			string spawn_npc_enc = "";
+			if( this.BannerItemTypesToNpcTypes != null ) {
+				spawn_npc_enc = JsonConfig<IReadOnlyList<KeyValuePair<int, ISet<int>>>>.Serialize( this.BannerItemTypesToNpcTypes );
+			}
 
 			return new TagCompound {
 				{ "is_init", (bool)this.IsInitialized },
 				{ "music_type", (int)this.MusicType },
-				{ "spawn_npcs", (string)spawn_npc_enc },
-				{ "uses", (int)this.Uses }
+				{ "uses", (int)this.Uses },
+				{ "spawn_npcs", (string)spawn_npc_enc }
 			};
 		}
 
-		public override void NetSend( Item item, BinaryWriter writer ) {
-			string spawn_npc_enc = JsonConfig<IReadOnlyList<KeyValuePair<int, ISet<int>>>>.Serialize( this.BannerItemTypesToNpcTypes );
-
-			writer.Write( (bool)this.IsInitialized );
-			writer.Write( (int)this.MusicType );
-			writer.Write( (string)spawn_npc_enc );
-			writer.Write( (int)this.Uses );
-		}
-
 		public override void NetReceive( Item item, BinaryReader reader ) {
+			if( item.type != this.mod.ItemType<CrossDimensionalAggregatorItem>() ) { return; }
+
 			bool is_init = reader.ReadBoolean();
 			int music = reader.ReadInt32();
-			var list = JsonConfig<List<KeyValuePair<int, ISet<int>>>>.Deserialize( reader.ReadString() );
 			int uses = reader.ReadInt32();
+			string spawn_npc_enc = reader.ReadString();
+
+			IReadOnlyList<KeyValuePair<int, ISet<int>>> list = null;
+			if( spawn_npc_enc != "" || is_init ) {
+				var raw_list = JsonConfig<List<KeyValuePair<int, ISet<int>>>>.Deserialize( spawn_npc_enc );
+				list = raw_list.AsReadOnly();
+			}
 
 			this.IsInitialized = is_init;
 			this.MusicType = music;
-			this.BannerItemTypesToNpcTypes = list.AsReadOnly();
+			this.BannerItemTypesToNpcTypes = list;
 			this.Uses = uses;
+		}
+
+		public override void NetSend( Item item, BinaryWriter writer ) {
+			if( item.type != this.mod.ItemType<CrossDimensionalAggregatorItem>() ) { return; }
+
+			string spawn_npc_enc = "";
+			if( this.BannerItemTypesToNpcTypes != null ) {
+				spawn_npc_enc = JsonConfig<IReadOnlyList<KeyValuePair<int, ISet<int>>>>.Serialize( this.BannerItemTypesToNpcTypes );
+			}
+
+			writer.Write( (bool)this.IsInitialized );
+			writer.Write( (int)this.MusicType );
+			writer.Write( (int)this.Uses );
+			writer.Write( (string)spawn_npc_enc );
 		}
 
 
@@ -79,14 +112,6 @@ namespace DynamicInvasions.Items {
 		public int MusicType { get; private set; }
 		public IReadOnlyList<KeyValuePair<int, ISet<int>>> BannerItemTypesToNpcTypes { get; private set; }
 		public int Uses { get; private set; }
-
-
-		public AggregatorItemInfo() : base() {
-			this.IsInitialized = false;
-			this.MusicType = 0;
-			this.BannerItemTypesToNpcTypes = null;
-			this.Uses = 0;
-		}
 
 
 		public void Initialize( int music_box_item_type, IList<int> banner_item_types ) {

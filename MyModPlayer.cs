@@ -1,6 +1,7 @@
 ﻿using DynamicInvasions.Items;
 using DynamicInvasions.NetProtocol;
 using HamstarHelpers.PlayerHelpers;
+using System;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -30,8 +31,8 @@ namespace DynamicInvasions {
 				}
 
 				if( Main.netMode == 1 ) {   // Client
-					ClientNetProtocol.SendModSettingsRequestFromClient( mymod );
-					ClientNetProtocol.SendInvasionStatusRequestFromClient( mymod );
+					ClientPacketHandlers.SendModSettingsRequestFromClient( mymod );
+					ClientPacketHandlers.SendInvasionStatusRequestFromClient( mymod );
 				}
 
 				this.HasEnteredWorld = true;
@@ -58,7 +59,7 @@ namespace DynamicInvasions {
 					Dust.NewDust( PlayerItemHelpers.TipOfHeldItem( this.player ), held_item.width, held_item.height, 15, 0, 0, 150, Main.DiscoColor, 1.2f );
 				}
 			}
-
+			
 			return base.PreItemCheck();
 		}
 	}

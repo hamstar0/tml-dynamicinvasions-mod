@@ -6,35 +6,33 @@ using Terraria.ModLoader.IO;
 
 
 namespace DynamicInvasions.Invasion {
-	abstract class InvasionData {
-		public bool IsInvading { get; protected set; }
-		public int InvasionSize { get; protected set; }
-		public int InvasionSizeStart { get; protected set; }
+	class InvasionData {
+		public bool IsInvading;
+		public int InvasionSize;
+		public int InvasionSizeStart;
 
-		public string Label { get; protected set; }
-		public Color LabelColor { get; protected set; }
+		public string Label;
+		public Color LabelColor;
 
-		public int InvasionEnrouteDuration { get; protected set; }
-		public int InvasionEnrouteWarningDuration { get; protected set; }
+		public int InvasionEnrouteDuration;
+		public int InvasionEnrouteWarningDuration;
 
-		public int InvasionProgressIntroAnimation { get; protected set; }
-		public float ProgressMeterIntroZoom { get; protected set; }
+		public int InvasionProgressIntroAnimation;
+		public float ProgressMeterIntroZoom;
 
-		public int MusicType { get; protected set; }
+		public int MusicType;
 
-		protected IList<int> _SpawnNpcTypeList;
-		public IReadOnlyList<int> SpawnNpcTypeList { get; protected set; }
-
+		public IList<int> SpawnNpcTypeList { get; private set; }
 
 
-		protected InvasionData() {
+
+		public InvasionData( DynamicInvasions mymod ) {
 			var list = new List<int>();
 
 			this.IsInvading = false;
 			this.Label = "Dimensional Breach";
 			this.LabelColor = Color.White;
-			this._SpawnNpcTypeList = list;
-			this.SpawnNpcTypeList = list.AsReadOnly();
+			this.SpawnNpcTypeList = list;
 
 			this.InvasionSize = 0;
 			this.InvasionSizeStart = 0;
@@ -47,9 +45,12 @@ namespace DynamicInvasions.Invasion {
 		}
 
 
-		private void Initialize( bool is_invading, int size, int start_size, int enroute_time, int warn_time, int intro_time, int music_type, string spawn_npcs_enc ) {
-			var list = JsonConfig<List<int>>.Deserialize( spawn_npcs_enc );
+		public void Initialize( bool is_invading, int size, int start_size, int enroute_time, int warn_time, int intro_time, int music_type, string spawn_npcs_enc ) {
+			var spawn_npcs = JsonConfig<IList<int>>.Deserialize( spawn_npcs_enc );
+			this.Initialize( is_invading, size, start_size, enroute_time, warn_time, intro_time, music_type, spawn_npcs );
+		}
 
+		public void Initialize( bool is_invading, int size, int start_size, int enroute_time, int warn_time, int intro_time, int music_type, IList<int> spawn_npcs ) {
 			this.IsInvading = is_invading;
 			this.InvasionSize = size;
 			this.InvasionSizeStart = start_size;
@@ -57,11 +58,11 @@ namespace DynamicInvasions.Invasion {
 			this.InvasionEnrouteWarningDuration = warn_time;
 			this.InvasionProgressIntroAnimation = intro_time;
 			this.MusicType = music_type;
-			this._SpawnNpcTypeList = list;
-			this.SpawnNpcTypeList = list.AsReadOnly();
+			this.SpawnNpcTypeList = spawn_npcs;
 		}
 
 
+		////////////////
 
 		public void LoadMe( TagCompound tags ) {
 			if( !tags.ContainsKey( "is_invading" ) ) { return; }
@@ -86,7 +87,7 @@ namespace DynamicInvasions.Invasion {
 				{ "warn_time", this.InvasionEnrouteWarningDuration },
 				{ "intro_time", this.InvasionProgressIntroAnimation },
 				{ "music_type", this.MusicType },
-				{ "spawn_npcs", JsonConfig<IReadOnlyList<int>>.Serialize( this.SpawnNpcTypeList ) }
+				{ "spawn_npcs", JsonConfig<IList<int>>.Serialize( this.SpawnNpcTypeList ) }
 			};
 		}
 
@@ -98,7 +99,7 @@ namespace DynamicInvasions.Invasion {
 			writer.Write( (int)this.InvasionEnrouteWarningDuration );
 			writer.Write( (int)this.InvasionProgressIntroAnimation );
 			writer.Write( (int)this.MusicType );
-			writer.Write( (string)JsonConfig<IReadOnlyList<int>>.Serialize( this.SpawnNpcTypeList ) );
+			writer.Write( (string)JsonConfig<IList<int>>.Serialize( this.SpawnNpcTypeList ) );
 		}
 
 		public void MyNetReceive( BinaryReader reader ) {
@@ -112,6 +113,17 @@ namespace DynamicInvasions.Invasion {
 			string spawn_npcs = reader.ReadString();
 
 			this.Initialize( is_invading, size, start_size, enroute_time, warn_time, intro_time, music_type, spawn_npcs );
+		}
+
+
+		////////////////
+
+		public void EndInvasion() {
+			this.IsInvading = false;
+			this.InvasionSize = 0;
+			this.InvasionSizeStart = 0;
+			this.InvasionEnrouteDuration = 0;
+			this.MusicType = 0;
 		}
 	}
 }

@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using Terraria.UI;
 using Terraria;
 using System.IO;
-using DynamicInvasions.Invasion;
 using DynamicInvasions.NetProtocol;
 
 
@@ -33,13 +32,14 @@ namespace DynamicInvasions {
 
 		public override void Load() {
 			var hamhelpmod = ModLoader.GetMod( "HamstarHelpers" );
-			if( hamhelpmod.Version < new Version(1, 0, 16) ) {
-				throw new Exception( "Hamstar's Helpers must be version "+hamhelpmod.Version.ToString()+" or greater." );
+			var min_ver = new Version( 1, 0, 17 )
+			if( hamhelpmod.Version < min_ver ) {
+				throw new Exception( "Hamstar's Helpers must be version "+ min_ver.ToString()+" or greater." );
 			}
 
 			this.LoadConfig();
-
-			InvasionLogic.ModLoad( this );
+			
+			Invasion.InvasionLogic.ModLoad( this );
 		}
 
 		private void LoadConfig() {
@@ -62,12 +62,12 @@ namespace DynamicInvasions {
 
 
 		////////////////
-
+		
 		public override void HandlePacket( BinaryReader reader, int player_who ) {
 			if( Main.netMode == 1 ) {   // Client
-				ClientNetProtocol.RoutePacket( this, reader );
+				ClientPacketHandlers.HandlePacket( this, reader );
 			} else if( Main.netMode == 2 ) {    // Server
-				ServerNetProtocol.RoutePacket( this, reader, player_who );
+				ServerPacketHandlers.RoutePacket( this, reader, player_who );
 			}
 		}
 
@@ -79,21 +79,18 @@ namespace DynamicInvasions {
 
 			if( Main.myPlayer != -1 && !Main.gameMenu && Main.LocalPlayer.active ) {
 				var modworld = this.GetModWorld<MyModWorld>();
-
-				if( modworld.Logic.HasInvasionFinishedArriving() ) {
-					music = modworld.Logic.MusicType;
-				}
+				modworld.Logic.UpdateMusic( ref music );
 			}
 		}
 
+
 		public override void ModifyInterfaceLayers( List<GameInterfaceLayer> layers ) {
 			if( !this.Config.Data.Enabled ) { return; }
-
 			int idx = layers.FindIndex( layer => layer.Name.Equals( "Vanilla: Invasion Progress Bars" ) );
 
 			if( idx != -1 ) {
 				var func = new GameInterfaceDrawMethod( delegate() {
-					if( Main.netMode != 2 ) {  // Not server
+						if( Main.netMode != 2 ) {  // Not server
 						var modworld = this.GetModWorld<MyModWorld>();
 
 						if( modworld.Logic.RunProgressBarAnimation() ) {

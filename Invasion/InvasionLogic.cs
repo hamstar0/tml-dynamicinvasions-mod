@@ -1,35 +1,61 @@
-﻿using DynamicInvasions.Items;
-using HamstarHelpers.DebugHelpers;
+﻿using HamstarHelpers.DebugHelpers;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 
 namespace DynamicInvasions.Invasion {
-	class InvasionLogic : InvasionInfo {
+	public partial class InvasionLogic {
 		public static Texture2D ProgressBarTexture { get; private set; }
 
 		public static void ModLoad( DynamicInvasions mymod ) {
-			if( InvasionLogic.ProgressBarTexture == null && !Main.dedServ ) {	// Client
+			if( InvasionLogic.ProgressBarTexture == null && !Main.dedServ ) {	// Not server
 				InvasionLogic.ProgressBarTexture = mymod.GetTexture( "InvasionIcon" );
 			}
 		}
 
-		
-		////////////////
-
-		public InvasionLogic() : base() { }
 
 		////////////////
 
-		public bool CanStartInvasion( DynamicInvasions mymod, AggregatorItemInfo item_info ) {
-			if( !item_info.IsInitialized ) {
-				return false;
-			}
+		private InvasionData Data;
+		//private AutomaticInvasions Auto = null;
 
-			if( !this.IsInvading && Main.invasionDelay > 0 ) {
+
+		internal InvasionLogic( DynamicInvasions mymod ) {
+			this.Data = new InvasionData( mymod );
+
+			//if( Main.netMode == 0 || Main.netMode == 2 ) {
+			//	this.Auto = new AutomaticInvasions();
+			//}
+		}
+
+
+		////////////////
+
+		internal void LoadMe( TagCompound tags ) {
+			this.Data.LoadMe( tags );
+		}
+
+		internal TagCompound SaveMe() {
+			return this.Data.SaveMe();
+		}
+
+		internal void MyNetSend( BinaryWriter writer ) {
+			this.Data.MyNetSend( writer );
+		}
+
+		internal void MyNetReceive( BinaryReader reader ) {
+			this.Data.MyNetReceive( reader );
+		}
+
+		////////////////
+
+		public bool CanStartInvasion( DynamicInvasions mymod ) {
+			if( !this.Data.IsInvading && Main.invasionDelay > 0 ) {
 				Main.invasionDelay = 0;	// Failsafe?
 			}
 			
@@ -43,25 +69,20 @@ namespace DynamicInvasions.Invasion {
 		}
 
 		public bool HasInvasionFinishedArriving() {
-			return this.IsInvading && this.InvasionEnrouteDuration == 0;
+			return this.Data.IsInvading && this.Data.InvasionEnrouteDuration == 0;
 		}
 
 
 		public void StartInvasion( DynamicInvasions mymod, int music_type, IReadOnlyList<KeyValuePair<int, ISet<int>>> spawn_info ) {
 			Main.invasionDelay = 2; // Lightweight invasion
-
-			var list = spawn_info.SelectMany( id => id.Value ).ToList();
+			var spawn_npcs = spawn_info.SelectMany( id => id.Value ).ToList();
+			int size = 0;
 
 			if( mymod.IsDebugInfoMode() ) {
-				string str = string.Join( ",", list.ToArray() );
+				string str = string.Join( ",", spawn_npcs.ToArray() );
 				DebugHelpers.Log( "starting invasion music: " + music_type + ", npcs: " + str );
 			}
 			
-			this.IsInvading = true;
-			this.MusicType = music_type;
-			this._SpawnNpcTypeList = list;
-			this.SpawnNpcTypeList = list.AsReadOnly();
-
 			int invadable_player_count = 0;
 			for( int i = 0; i < 255; ++i ) {
 				if( Main.player[i].active && Main.player[i].statLifeMax >= 200 ) {
@@ -73,70 +94,60 @@ namespace DynamicInvasions.Invasion {
 			}
 
 			if( mymod.IsCheatMode() ) {
-				this.InvasionSize = 30;
+				size = 30;
 			} else {
 				int base_amt = mymod.Config.Data.InvasionMinSize;
 				int per_player_amt = mymod.Config.Data.InvasionAddedSizePerStrongPlayer;
-				this.InvasionSize = base_amt + (per_player_amt * invadable_player_count);
+				size = base_amt + (per_player_amt * invadable_player_count);
 			}
-			this.InvasionSizeStart = this.InvasionSize;
 
-			this.InvasionEnrouteDuration = 60 * mymod.Config.Data.InvasionArrivalTimeInSeconds;
-			this.InvasionEnrouteWarningDuration = 0;
-			this.InvasionProgressIntroAnimation = 0;
-			this.ProgressMeterIntroZoom = 0.0f;
+			this.Data.Initialize( true, size, size, 60 * mymod.Config.Data.InvasionArrivalTimeInSeconds, 0, 0, music_type, spawn_npcs );
 		}
 
 		
 		public void EndInvasion() {
-			this.IsInvading = false;
-			this.InvasionSize = 0;
-			this.InvasionSizeStart = 0;
-			this.InvasionEnrouteDuration = 0;
-			this.MusicType = 0;
-
+			this.Data.EndInvasion();
 			this.InvasionWarning( "The dimensional breach has closed." );
 		}
-
-
-
+		
 		////////////////
 
 		public void InvaderKilled( NPC npc ) {
-			if( !this.SpawnNpcTypeList.Contains(npc.type) ) { return; }
+			if( !this.Data.SpawnNpcTypeList.Contains( npc.type ) ) { return; }
 
-			this.InvasionSize--;
+			this.Data.InvasionSize--;
 
-			if( this.InvasionSize <= 0 ) {
+			if( this.Data.InvasionSize <= 0 ) {
 				this.EndInvasion();
 			}
 		}
+
 
 		////////////////
 
 		public void Update( DynamicInvasions mymod ) {
 			if( mymod.IsDebugInfoMode() ) {
-				DebugHelpers.Display["info"] = "IsInvading: "+this.IsInvading+
-					", : enroute: "+this.InvasionEnrouteDuration+
-					", size: "+this.InvasionSize+
-					", max: "+this.InvasionSizeStart;
+				DebugHelpers.Display["info"] = "IsInvading: "+this.Data.IsInvading+
+					", : enroute: "+this.Data.InvasionEnrouteDuration+
+					", size: "+this.Data.InvasionSize+
+					", max: "+this.Data.InvasionSizeStart;
 			}
 
-			if( this.IsInvading ) {
+			if( this.Data.IsInvading ) {
 				Main.invasionDelay = 2; // Lightweight invasion
 
-				if( this.InvasionEnrouteDuration > 0 ) {
-					this.InvasionEnrouteDuration--;
-					if( this.InvasionEnrouteWarningDuration == 0 ) {
-						this.InvasionEnrouteWarningDuration = 12 * 60;
+				if( this.Data.InvasionEnrouteDuration > 0 ) {
+					this.Data.InvasionEnrouteDuration--;
+					if( this.Data.InvasionEnrouteWarningDuration == 0 ) {
+						this.Data.InvasionEnrouteWarningDuration = 12 * 60;
 						this.InvasionWarning( "A dimensional breach is growing..." );
 					} else {
-						this.InvasionEnrouteWarningDuration--;
+						this.Data.InvasionEnrouteWarningDuration--;
 					}
 				}
 
-				if( this.InvasionEnrouteDuration == 1 ) {
-					this.InvasionEnrouteDuration = 0;
+				if( this.Data.InvasionEnrouteDuration == 1 ) {
+					this.Data.InvasionEnrouteDuration = 0;
 					this.InvasionWarning( "A dimensional breach has arrived!" );
 				}
 			} else {
@@ -144,10 +155,17 @@ namespace DynamicInvasions.Invasion {
 			}
 		}
 
+
+		public void UpdateMusic( ref int music ) {
+			if( this.HasInvasionFinishedArriving() ) {
+				music = this.Data.MusicType;
+			}
+		}
+
 		////////////////
 
 		public void EditSpawnPool( IDictionary<int, float> pool, NPCSpawnInfo spawn_info ) {
-			foreach( int npc_type in this.SpawnNpcTypeList ) {
+			foreach( int npc_type in this.Data.SpawnNpcTypeList ) {
 				if( !pool.ContainsKey(npc_type) ) { pool[npc_type] = 1000f; }
 				else { pool[npc_type] += 1000f; }
 			}

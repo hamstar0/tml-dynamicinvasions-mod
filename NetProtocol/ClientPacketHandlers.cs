@@ -7,32 +7,25 @@ using Terraria.ModLoader;
 
 
 namespace DynamicInvasions.NetProtocol {
-	public enum ClientNetProtocolTypes : byte {
-		ModSettings=128,
-		Invasion,
-		InvasionStatus
-	}
-
-
-	public static class ClientNetProtocol {
-		public static void RoutePacket( DynamicInvasions mymod, BinaryReader reader ) {
-			ClientNetProtocolTypes protocol = (ClientNetProtocolTypes)reader.ReadByte();
+	public static class ClientPacketHandlers {
+		public static void HandlePacket( DynamicInvasions mymod, BinaryReader reader ) {
+			NetProtocolTypes protocol = (NetProtocolTypes)reader.ReadByte();
 
 			switch( protocol ) {
-			case ClientNetProtocolTypes.ModSettings:
-				if( mymod.IsDebugInfoMode() ) { DebugHelpers.Log( "RouteReceivedClientPackets.ModSettings" ); }
-				ClientNetProtocol.ReceiveModSettingsOnClient( mymod, reader );
+			case NetProtocolTypes.ModSettings:
+				if( mymod.IsDebugInfoMode() ) { DebugHelpers.Log( "ClientPacketHandlers.ModSettings" ); }
+				ClientPacketHandlers.ReceiveModSettingsOnClient( mymod, reader );
 				break;
-			case ClientNetProtocolTypes.Invasion:
-				if( mymod.IsDebugInfoMode() ) { DebugHelpers.Log( "RouteReceivedClientPackets.Invasion" ); }
-				ClientNetProtocol.ReceiveInvasionOnClient( mymod, reader );
+			case NetProtocolTypes.Invasion:
+				if( mymod.IsDebugInfoMode() ) { DebugHelpers.Log( "ClientPacketHandlers.Invasion" ); }
+				ClientPacketHandlers.ReceiveInvasionOnClient( mymod, reader );
 				break;
-			case ClientNetProtocolTypes.InvasionStatus:
-				if( mymod.IsDebugInfoMode() ) { DebugHelpers.Log( "RouteReceivedClientPackets.InvasionStatus" ); }
-				ClientNetProtocol.ReceiveInvasionStatusOnClient( mymod, reader );
+			case NetProtocolTypes.InvasionStatus:
+				if( mymod.IsDebugInfoMode() ) { DebugHelpers.Log( "ClientPacketHandlers.InvasionStatus" ); }
+				ClientPacketHandlers.ReceiveInvasionStatusOnClient( mymod, reader );
 				break;
 			default:
-				if( mymod.IsDebugInfoMode() ) { DebugHelpers.Log( "RouteReceivedClientPackets ...? "+protocol ); }
+				if( mymod.IsDebugInfoMode() ) { DebugHelpers.Log( "ClientPacketHandlers ...? " + protocol ); }
 				break;
 			}
 		}
@@ -49,7 +42,7 @@ namespace DynamicInvasions.NetProtocol {
 
 			ModPacket packet = mymod.GetPacket();
 
-			packet.Write( (byte)ServerNetProtocolTypes.RequestModSettings );
+			packet.Write( (byte)NetProtocolTypes.RequestModSettings );
 
 			packet.Send();
 		}
@@ -61,7 +54,7 @@ namespace DynamicInvasions.NetProtocol {
 			ModPacket packet = mymod.GetPacket();
 			string spawn_info_enc = JsonConfig<IReadOnlyList<KeyValuePair<int, ISet<int>>>>.Serialize( spawn_info );
 
-			packet.Write( (byte)ServerNetProtocolTypes.RequestInvasion );
+			packet.Write( (byte)NetProtocolTypes.RequestInvasion );
 			packet.Write( (int)music_type );
 			packet.Write( (string)spawn_info_enc );
 			
@@ -74,7 +67,7 @@ namespace DynamicInvasions.NetProtocol {
 
 			ModPacket packet = mymod.GetPacket();
 
-			packet.Write( (byte)ServerNetProtocolTypes.RequestInvasionStatus );
+			packet.Write( (byte)NetProtocolTypes.RequestInvasionStatus );
 
 			packet.Send();
 		}
