@@ -36,21 +36,10 @@ namespace DynamicInvasions.Invasion {
 
 		////////////////
 
-		internal void LoadMe( TagCompound tags ) {
-			this.Data.LoadMe( tags );
-		}
-
-		internal TagCompound SaveMe() {
-			return this.Data.SaveMe();
-		}
-
-		internal void MyNetSend( BinaryWriter writer ) {
-			this.Data.MyNetSend( writer );
-		}
-
-		internal void MyNetReceive( BinaryReader reader ) {
-			this.Data.MyNetReceive( reader );
-		}
+		internal void LoadMe( TagCompound tags ) { this.Data.LoadMe( tags ); }
+		internal TagCompound SaveMe() { return this.Data.SaveMe(); }
+		internal void MyNetSend( BinaryWriter writer ) { this.Data.MyNetSend( writer ); }
+		internal void MyNetReceive( BinaryReader reader ) { this.Data.MyNetReceive( reader ); }
 
 		////////////////
 

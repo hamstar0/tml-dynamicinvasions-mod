@@ -7,6 +7,7 @@ using Terraria.UI;
 using Terraria;
 using System.IO;
 using DynamicInvasions.NetProtocol;
+using DynamicInvasions.Invasion;
 
 
 namespace DynamicInvasions {
@@ -39,7 +40,7 @@ namespace DynamicInvasions {
 
 			this.LoadConfig();
 			
-			Invasion.InvasionLogic.ModLoad( this );
+			InvasionLogic.ModLoad( this );
 		}
 
 		private void LoadConfig() {
@@ -105,7 +106,7 @@ namespace DynamicInvasions {
 			}
 		}
 
-
+		
 		////////////////
 
 		public bool IsDebugInfoMode() {
