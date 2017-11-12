@@ -72,6 +72,7 @@
   <ItemGroup>
     <Content Include="build.txt" />
     <Content Include="description.txt" />
+    <Content Include="icon.png" />
     <Content Include="Items\CrossDimensionalAggregatorItem.png" />
   </ItemGroup>
   <ItemGroup>

@@ -12,7 +12,7 @@ namespace DynamicInvasions.Invasion {
 	public partial class InvasionLogic {
 		public static Texture2D ProgressBarTexture { get; private set; }
 
-		public static void ModLoad( DynamicInvasions mymod ) {
+		public static void ModLoad( DynamicInvasionsMod mymod ) {
 			if( InvasionLogic.ProgressBarTexture == null && !Main.dedServ ) {	// Not server
 				InvasionLogic.ProgressBarTexture = mymod.GetTexture( "InvasionIcon" );
 			}
@@ -25,7 +25,7 @@ namespace DynamicInvasions.Invasion {
 		//private AutomaticInvasions Auto = null;
 
 
-		internal InvasionLogic( DynamicInvasions mymod ) {
+		internal InvasionLogic( DynamicInvasionsMod mymod ) {
 			this.Data = new InvasionData( mymod );
 
 			//if( Main.netMode == 0 || Main.netMode == 2 ) {
@@ -43,7 +43,7 @@ namespace DynamicInvasions.Invasion {
 
 		////////////////
 
-		public bool CanStartInvasion( DynamicInvasions mymod ) {
+		public bool CanStartInvasion( DynamicInvasionsMod mymod ) {
 			if( !this.Data.IsInvading && Main.invasionDelay > 0 ) {
 				Main.invasionDelay = 0;	// Failsafe?
 			}
@@ -62,7 +62,7 @@ namespace DynamicInvasions.Invasion {
 		}
 
 
-		public void StartInvasion( DynamicInvasions mymod, int music_type, IReadOnlyList<KeyValuePair<int, ISet<int>>> spawn_info ) {
+		public void StartInvasion( DynamicInvasionsMod mymod, int music_type, IReadOnlyList<KeyValuePair<int, ISet<int>>> spawn_info ) {
 			Main.invasionDelay = 2; // Lightweight invasion
 			var spawn_npcs = spawn_info.SelectMany( id => id.Value ).ToList();
 			int size = 0;
@@ -114,7 +114,7 @@ namespace DynamicInvasions.Invasion {
 
 		////////////////
 
-		public void Update( DynamicInvasions mymod ) {
+		public void Update( DynamicInvasionsMod mymod ) {
 			if( mymod.IsDebugInfoMode() ) {
 				DebugHelpers.Display["info"] = "IsInvading: "+this.Data.IsInvading+
 					", : enroute: "+this.Data.InvasionEnrouteDuration+

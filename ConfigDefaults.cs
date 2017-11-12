@@ -2,9 +2,12 @@
 
 
 namespace DynamicInvasions {
-	public class ConfigurationData {
+	public class DynamicInvasionsConfigData {
 		public readonly static Version ConfigVersion = new Version( 0, 8, 1 );
+		public readonly static string ConfigFileName = "Dynamic Invasions Config.json";
 
+
+		////////////////
 
 		public string VersionSinceUpdate = "";
 
@@ -38,16 +41,16 @@ namespace DynamicInvasions {
 		////////////////
 
 		public bool UpdateToLatestVersion() {
-			var new_config = new ConfigurationData();
+			var new_config = new DynamicInvasionsConfigData();
 			var vers_since = this.VersionSinceUpdate != "" ?
 				new Version( this.VersionSinceUpdate ) :
 				new Version();
 
-			if( vers_since >= ConfigurationData.ConfigVersion ) {
+			if( vers_since >= DynamicInvasionsConfigData.ConfigVersion ) {
 				return false;
 			}
 			
-			this.VersionSinceUpdate = ConfigurationData.ConfigVersion.ToString();
+			this.VersionSinceUpdate = DynamicInvasionsConfigData.ConfigVersion.ToString();
 
 			return true;
 		}

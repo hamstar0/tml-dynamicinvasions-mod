@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 namespace DynamicInvasions {
 	class MyGlobalNpc : GlobalNPC {
 		public override void EditSpawnRate( Player player, ref int spawn_rate, ref int max_spawns ) {
-			var mymod = (DynamicInvasions)this.mod;
+			var mymod = (DynamicInvasionsMod)this.mod;
 			if( !mymod.Config.Data.Enabled ) { return; }
 			var modworld = this.mod.GetModWorld<MyModWorld>();
 
@@ -19,7 +19,7 @@ namespace DynamicInvasions {
 		}
 
 		public override void EditSpawnPool( IDictionary<int, float> pool, NPCSpawnInfo spawn_info ) {
-			var mymod = (DynamicInvasions)this.mod;
+			var mymod = (DynamicInvasionsMod)this.mod;
 			if( !mymod.Config.Data.Enabled ) { return; }
 			var modworld = this.mod.GetModWorld<MyModWorld>();
 
@@ -30,7 +30,7 @@ namespace DynamicInvasions {
 
 
 		public override bool PreNPCLoot( NPC npc ) {
-			var mymod = (DynamicInvasions)this.mod;
+			var mymod = (DynamicInvasionsMod)this.mod;
 			if( !mymod.Config.Data.Enabled ) { return base.CheckDead( npc ); }
 			var modworld = this.mod.GetModWorld<MyModWorld>();
 
@@ -43,7 +43,7 @@ namespace DynamicInvasions {
 
 
 		public override bool CheckDead( NPC npc ) {
-			var mymod = (DynamicInvasions)this.mod;
+			var mymod = (DynamicInvasionsMod)this.mod;
 			if( !mymod.Config.Data.Enabled ) { return base.CheckDead(npc); }
 			var modworld = this.mod.GetModWorld<MyModWorld>();
 

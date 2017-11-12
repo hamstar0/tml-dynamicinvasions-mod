@@ -11,25 +11,41 @@ using DynamicInvasions.Invasion;
 
 
 namespace DynamicInvasions {
-    public class DynamicInvasions : Mod {
-		public JsonConfig<ConfigurationData> Config { get; private set; }
+    public class DynamicInvasionsMod : Mod {
+		public static string GithubUserName { get { return "hamstar0"; } }
+		public static string GithubProjectName { get { return "tml-dynamicinvasions-mod"; } }
 
-		public int DEBUGFLAGS { get; private set; }
+		public static string ConfigRelativeFilePath {
+			get { return ConfigurationDataBase.RelativePath + Path.DirectorySeparatorChar + DynamicInvasionsConfigData.ConfigFileName; }
+		}
+		public static void ReloadConfigFromFile() {
+			if( DynamicInvasionsMod.Instance != null && Main.netMode != 1 ) {
+				DynamicInvasionsMod.Instance.Config.LoadFile();
+			}
+		}
+
+		public static DynamicInvasionsMod Instance { get; private set; }
 
 
-		public DynamicInvasions() {
-			this.DEBUGFLAGS = 0;
+		////////////////
 
+		public JsonConfig<DynamicInvasionsConfigData> Config { get; private set; }
+
+
+		////////////////
+
+		public DynamicInvasionsMod() {
 			this.Properties = new ModProperties() {
 				Autoload = true,
 				AutoloadGores = true,
 				AutoloadSounds = true
 			};
-
-			string filename = "Dynamic Invasions Config.json";
-			this.Config = new JsonConfig<ConfigurationData>( filename, "Mod Configs", new ConfigurationData() );
+			
+			this.Config = new JsonConfig<DynamicInvasionsConfigData>( DynamicInvasionsConfigData.ConfigFileName,
+				ConfigurationDataBase.RelativePath, new DynamicInvasionsConfigData() );
 		}
 
+		////////////////
 
 		public override void Load() {
 			var hamhelpmod = ModLoader.GetMod( "HamstarHelpers" );
@@ -54,11 +70,9 @@ namespace DynamicInvasions {
 			}
 
 			if( this.Config.Data.UpdateToLatestVersion() ) {
-				ErrorLogger.Log( "Dynamic Invasions updated to " + ConfigurationData.ConfigVersion.ToString() );
+				ErrorLogger.Log( "Dynamic Invasions updated to " + DynamicInvasionsConfigData.ConfigVersion.ToString() );
 				this.Config.SaveFile();
 			}
-
-			this.DEBUGFLAGS = this.Config.Data.DEBUGFLAGS;
 		}
 
 
@@ -110,13 +124,13 @@ namespace DynamicInvasions {
 		////////////////
 
 		public bool IsDebugInfoMode() {
-			return (this.DEBUGFLAGS & 1) > 0;
+			return (this.Config.Data.DEBUGFLAGS & 1) > 0;
 		}
 		public bool IsForcedResetMode() {
-			return (this.DEBUGFLAGS & 2) > 0;
+			return (this.Config.Data.DEBUGFLAGS & 2) > 0;
 		}
 		public bool IsCheatMode() {
-			return (this.DEBUGFLAGS & 4) > 0;
+			return (this.Config.Data.DEBUGFLAGS & 4) > 0;
 		}
 	}
 }

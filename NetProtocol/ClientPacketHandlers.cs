@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace DynamicInvasions.NetProtocol {
 	public static class ClientPacketHandlers {
-		public static void HandlePacket( DynamicInvasions mymod, BinaryReader reader ) {
+		public static void HandlePacket( DynamicInvasionsMod mymod, BinaryReader reader ) {
 			NetProtocolTypes protocol = (NetProtocolTypes)reader.ReadByte();
 
 			switch( protocol ) {
@@ -36,7 +36,7 @@ namespace DynamicInvasions.NetProtocol {
 		// Client Senders
 		////////////////
 
-		public static void SendModSettingsRequestFromClient( DynamicInvasions mymod ) {
+		public static void SendModSettingsRequestFromClient( DynamicInvasionsMod mymod ) {
 			// Clients only
 			if( Main.netMode != 1 ) { return; }
 
@@ -47,7 +47,7 @@ namespace DynamicInvasions.NetProtocol {
 			packet.Send();
 		}
 		
-		public static void SendInvasionRequestFromClient( DynamicInvasions mymod, int music_type, IReadOnlyList<KeyValuePair<int, ISet<int>>> spawn_info ) {
+		public static void SendInvasionRequestFromClient( DynamicInvasionsMod mymod, int music_type, IReadOnlyList<KeyValuePair<int, ISet<int>>> spawn_info ) {
 			// Clients only
 			if( Main.netMode != 1 ) { return; }
 
@@ -61,7 +61,7 @@ namespace DynamicInvasions.NetProtocol {
 			packet.Send();
 		}
 
-		public static void SendInvasionStatusRequestFromClient( DynamicInvasions mymod ) {
+		public static void SendInvasionStatusRequestFromClient( DynamicInvasionsMod mymod ) {
 			// Clients only
 			if( Main.netMode != 1 ) { return; }
 
@@ -78,14 +78,14 @@ namespace DynamicInvasions.NetProtocol {
 		// Client Receivers
 		////////////////
 
-		private static void ReceiveModSettingsOnClient( DynamicInvasions mymod, BinaryReader reader ) {
+		private static void ReceiveModSettingsOnClient( DynamicInvasionsMod mymod, BinaryReader reader ) {
 			// Clients only
 			if( Main.netMode != 1 ) { return; }
 			
 			mymod.Config.DeserializeMe( reader.ReadString() );
 		}
 
-		private static void ReceiveInvasionOnClient( DynamicInvasions mymod, BinaryReader reader ) {
+		private static void ReceiveInvasionOnClient( DynamicInvasionsMod mymod, BinaryReader reader ) {
 			// Clients only
 			if( Main.netMode != 1 ) { return; }
 
@@ -97,7 +97,7 @@ namespace DynamicInvasions.NetProtocol {
 			modworld.Logic.StartInvasion( mymod, music_type, spawn_info.AsReadOnly() );
 		}
 
-		private static void ReceiveInvasionStatusOnClient( DynamicInvasions mymod, BinaryReader reader ) {
+		private static void ReceiveInvasionStatusOnClient( DynamicInvasionsMod mymod, BinaryReader reader ) {
 			// Clients only
 			if( Main.netMode != 1 ) { return; }
 			

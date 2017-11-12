@@ -108,13 +108,7 @@ namespace DynamicInvasions.Items {
 
 		////////////////
 
-		public bool IsInitialized { get; private set; }
-		public int MusicType { get; private set; }
-		public IReadOnlyList<KeyValuePair<int, ISet<int>>> BannerItemTypesToNpcTypes { get; private set; }
-		public int Uses { get; private set; }
-
-
-		public void Initialize( int music_box_item_type, IList<int> banner_item_types ) {
+		public static List<KeyValuePair<int, ISet<int>>> GetNpcSetsOfBanners( IList<int> banner_item_types ) {
 			var list = new List<KeyValuePair<int, ISet<int>>>( banner_item_types.Count );
 
 			foreach( int banner_item_type in banner_item_types ) {
@@ -122,6 +116,21 @@ namespace DynamicInvasions.Items {
 				var kv = new KeyValuePair<int, ISet<int>>( banner_item_type, npcs );
 				list.Add( kv );
 			}
+
+			return list;
+		}
+
+
+		////////////////
+
+		public bool IsInitialized { get; private set; }
+		public int MusicType { get; private set; }
+		public IReadOnlyList<KeyValuePair<int, ISet<int>>> BannerItemTypesToNpcTypes { get; private set; }
+		public int Uses { get; private set; }
+
+
+		public void Initialize( int music_box_item_type, IList<int> banner_item_types ) {
+			var list = AggregatorItemInfo.GetNpcSetsOfBanners( banner_item_types );
 
 			this.IsInitialized = true;
 			this.MusicType = ItemMusicBoxHelpers.GetMusicTypeOfMusicBox( music_box_item_type );

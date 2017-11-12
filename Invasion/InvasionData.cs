@@ -26,7 +26,7 @@ namespace DynamicInvasions.Invasion {
 
 
 
-		public InvasionData( DynamicInvasions mymod ) {
+		public InvasionData( DynamicInvasionsMod mymod ) {
 			var list = new List<int>();
 
 			this.IsInvading = false;

@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace DynamicInvasions.NetProtocol {
 	public static class ServerPacketHandlers {
-		public static void RoutePacket( DynamicInvasions mymod, BinaryReader reader, int player_who ) {
+		public static void RoutePacket( DynamicInvasionsMod mymod, BinaryReader reader, int player_who ) {
 			NetProtocolTypes protocol = (NetProtocolTypes)reader.ReadByte();
 
 			switch( protocol ) {
@@ -36,7 +36,7 @@ namespace DynamicInvasions.NetProtocol {
 		// Server Senders
 		////////////////
 
-		public static void SendModSettingsFromServer( DynamicInvasions mymod, Player player ) {
+		public static void SendModSettingsFromServer( DynamicInvasionsMod mymod, Player player ) {
 			// Server only
 			if( Main.netMode != 2 ) { return; }
 
@@ -48,7 +48,7 @@ namespace DynamicInvasions.NetProtocol {
 			packet.Send( (int)player.whoAmI );
 		}
 
-		public static void SendInvasionFromServer( DynamicInvasions mymod, Player player, int music_type, string spawn_info_enc ) {
+		public static void SendInvasionFromServer( DynamicInvasionsMod mymod, Player player, int music_type, string spawn_info_enc ) {
 			// Server only
 			if( Main.netMode != 2 ) { return; }
 
@@ -61,7 +61,7 @@ namespace DynamicInvasions.NetProtocol {
 			packet.Send( (int)player.whoAmI );
 		}
 
-		public static void SendInvasionStatusFromServer( DynamicInvasions mymod, Player player ) {
+		public static void SendInvasionStatusFromServer( DynamicInvasionsMod mymod, Player player ) {
 			// Server only
 			if( Main.netMode != 2 ) { return; }
 
@@ -80,14 +80,14 @@ namespace DynamicInvasions.NetProtocol {
 		// Server Receivers
 		////////////////
 
-		private static void ReceiveModSettingsRequestOnServer( DynamicInvasions mymod, BinaryReader reader, int player_who ) {
+		private static void ReceiveModSettingsRequestOnServer( DynamicInvasionsMod mymod, BinaryReader reader, int player_who ) {
 			// Server only
 			if( Main.netMode != 2 ) { return; }
 
 			ServerPacketHandlers.SendModSettingsFromServer( mymod, Main.player[player_who] );
 		}
 
-		private static void ReceiveInvasionRequestOnServer( DynamicInvasions mymod, BinaryReader reader, int player_who ) {
+		private static void ReceiveInvasionRequestOnServer( DynamicInvasionsMod mymod, BinaryReader reader, int player_who ) {
 			// Server only
 			if( Main.netMode != 2 ) { return; }
 
@@ -106,7 +106,7 @@ namespace DynamicInvasions.NetProtocol {
 			}
 		}
 
-		private static void ReceiveInvasionStatusRequestOnServer( DynamicInvasions mymod, BinaryReader reader, int player_who ) {
+		private static void ReceiveInvasionStatusRequestOnServer( DynamicInvasionsMod mymod, BinaryReader reader, int player_who ) {
 			// Server only
 			if( Main.netMode != 2 ) { return; }
 

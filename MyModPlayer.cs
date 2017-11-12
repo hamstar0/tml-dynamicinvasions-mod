@@ -22,7 +22,7 @@ namespace DynamicInvasions {
 
 		public override void OnEnterWorld( Player player ) {
 			if( this.player.whoAmI == Main.myPlayer ) {
-				var mymod = (DynamicInvasions)this.mod;
+				var mymod = (DynamicInvasionsMod)this.mod;
 
 				if( Main.netMode != 2 ) {   // Not server
 					if( !mymod.Config.LoadFile() ) {
@@ -41,7 +41,7 @@ namespace DynamicInvasions {
 
 
 		public override void PreUpdate() {
-			var mymod = (DynamicInvasions)this.mod;
+			var mymod = (DynamicInvasionsMod)this.mod;
 			if( !mymod.Config.Data.Enabled ) { return; }
 
 			if( this.player.whoAmI == Main.myPlayer ) {

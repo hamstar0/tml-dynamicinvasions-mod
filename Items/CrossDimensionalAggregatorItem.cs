@@ -38,7 +38,7 @@ namespace DynamicInvasions.Items {
 
 
 		public override bool CanUseItem( Player player ) {
-			var mymod = (DynamicInvasions)this.mod;
+			var mymod = (DynamicInvasionsMod)this.mod;
 			if( !mymod.Config.Data.Enabled ) { return false; }
 
 			var modworld = mymod.GetModWorld<MyModWorld>();
@@ -81,7 +81,7 @@ namespace DynamicInvasions.Items {
 
 		
 		public override void AddRecipes() {
-			var mymod = (DynamicInvasions)this.mod;
+			var mymod = (DynamicInvasionsMod)this.mod;
 			var myrecipe = new InterdimensionaAggregatorItemRecipe( mymod, mymod.Config.Data.BannersPerAggregator );
 			myrecipe.AddRecipe();
 		}
@@ -117,7 +117,7 @@ namespace DynamicInvasions.Items {
 		////////////////
 
 		public int GetFuelCost() {
-			var mymod = (DynamicInvasions)this.mod;
+			var mymod = (DynamicInvasionsMod)this.mod;
 			if( mymod.IsCheatMode()) {
 				return 0;
 			}
@@ -135,7 +135,7 @@ namespace DynamicInvasions.Items {
 				return false;
 			}
 
-			var mymod = (DynamicInvasions)this.mod;
+			var mymod = (DynamicInvasionsMod)this.mod;
 			var modworld = mymod.GetModWorld<MyModWorld>();
 			var item_info = this.item.GetGlobalItem<AggregatorItemInfo>();
 			int fuel_cost = this.GetFuelCost();
@@ -153,7 +153,7 @@ namespace DynamicInvasions.Items {
 		}
 
 		private void ActivateInvasion( Item fuel_item ) {
-			var mymod = (DynamicInvasions)this.mod;
+			var mymod = (DynamicInvasionsMod)this.mod;
 			var modworld = mymod.GetModWorld<MyModWorld>();
 			var item_info = this.item.GetGlobalItem<AggregatorItemInfo>();
 			int fuel_cost = this.GetFuelCost();
@@ -182,7 +182,7 @@ namespace DynamicInvasions.Items {
 		private int MusicBoxItemType = -1;
 
 
-		public InterdimensionaAggregatorItemRecipe( DynamicInvasions mymod, int banner_count ) : base( mymod ) {
+		public InterdimensionaAggregatorItemRecipe( DynamicInvasionsMod mymod, int banner_count ) : base( mymod ) {
 			this.BannerCount = banner_count;
 
 			this.AddTile( TileID.TinkerersWorkbench );
@@ -199,7 +199,7 @@ namespace DynamicInvasions.Items {
 		}
 
 		public override int ConsumeItem( int item_type, int num_required ) {
-			var mymod = (DynamicInvasions)this.mod;
+			var mymod = (DynamicInvasionsMod)this.mod;
 			var music_item_types = ItemMusicBoxHelpers.GetMusicBoxes();
 			var banner_item_types = NPCBannerHelpers.GetBannerItemTypes();
 			Item[] inv = Main.LocalPlayer.inventory;
@@ -244,7 +244,7 @@ namespace DynamicInvasions.Items {
 		}
 
 		public override bool RecipeAvailable() {
-			var mymod = (DynamicInvasions)this.mod;
+			var mymod = (DynamicInvasionsMod)this.mod;
 			if( !mymod.Config.Data.Enabled ) { return false; }
 			
 			return mymod.Config.Data.CraftableAggregators;
