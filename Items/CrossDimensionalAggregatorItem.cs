@@ -41,7 +41,7 @@ namespace DynamicInvasions.Items {
 			var mymod = (DynamicInvasionsMod)this.mod;
 			if( !mymod.Config.Data.Enabled ) { return false; }
 
-			var modworld = mymod.GetModWorld<MyModWorld>();
+			var modworld = mymod.GetModWorld<MyWorld>();
 			var item_info = this.item.GetGlobalItem<AggregatorItemInfo>();
 
 			if( !item_info.IsInitialized ) {
@@ -136,7 +136,7 @@ namespace DynamicInvasions.Items {
 			}
 
 			var mymod = (DynamicInvasionsMod)this.mod;
-			var modworld = mymod.GetModWorld<MyModWorld>();
+			var modworld = mymod.GetModWorld<MyWorld>();
 			var item_info = this.item.GetGlobalItem<AggregatorItemInfo>();
 			int fuel_cost = this.GetFuelCost();
 
@@ -154,7 +154,7 @@ namespace DynamicInvasions.Items {
 
 		private void ActivateInvasion( Item fuel_item ) {
 			var mymod = (DynamicInvasionsMod)this.mod;
-			var modworld = mymod.GetModWorld<MyModWorld>();
+			var modworld = mymod.GetModWorld<MyWorld>();
 			var item_info = this.item.GetGlobalItem<AggregatorItemInfo>();
 			int fuel_cost = this.GetFuelCost();
 

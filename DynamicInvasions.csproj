@@ -53,15 +53,16 @@
     <Reference Include="Microsoft.Xna.Framework.Xact" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API.cs" />
     <Compile Include="ConfigDefaults.cs" />
     <Compile Include="Invasion\AutomaticInvasions.cs" />
     <Compile Include="Invasion\InvasionLogic_Info.cs" />
     <Compile Include="Invasion\InvasionLogic.cs" />
-    <Compile Include="DynamicInvasions.cs" />
+    <Compile Include="DynamicInvasionsMod.cs" />
     <Compile Include="Invasion\InvasionData.cs" />
-    <Compile Include="MyGlobalNpc.cs" />
-    <Compile Include="MyModPlayer.cs" />
-    <Compile Include="MyModWorld.cs" />
+    <Compile Include="MyNpc.cs" />
+    <Compile Include="MyPlayer.cs" />
+    <Compile Include="MyWorld.cs" />
     <Compile Include="Items\CrossDimensionalAggregatorItem.cs" />
     <Compile Include="Items\AggregatorItemInfo.cs" />
     <Compile Include="NetProtocol\ClientPacketHandlers.cs" />

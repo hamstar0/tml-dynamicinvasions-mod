@@ -1,13 +1,12 @@
 ﻿using DynamicInvasions.Items;
 using DynamicInvasions.NetProtocol;
 using HamstarHelpers.PlayerHelpers;
-using System;
 using Terraria;
 using Terraria.ModLoader;
 
 
 namespace DynamicInvasions {
-	class MyModPlayer : ModPlayer {
+	class MyPlayer : ModPlayer {
 		public bool HasEnteredWorld = false;
 
 
@@ -16,7 +15,7 @@ namespace DynamicInvasions {
 		}
 
 		public override void clientClone( ModPlayer client_clone ) {
-			var clone = (MyModPlayer)client_clone;
+			var clone = (MyPlayer)client_clone;
 			clone.HasEnteredWorld = this.HasEnteredWorld;
 		}
 
@@ -45,7 +44,7 @@ namespace DynamicInvasions {
 			if( !mymod.Config.Data.Enabled ) { return; }
 
 			if( this.player.whoAmI == Main.myPlayer ) {
-				var modworld = this.mod.GetModWorld<MyModWorld>();
+				var modworld = this.mod.GetModWorld<MyWorld>();
 				modworld.Logic.Update( mymod );
 			}
 		}

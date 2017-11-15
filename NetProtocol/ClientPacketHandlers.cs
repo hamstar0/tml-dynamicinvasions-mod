@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 
 namespace DynamicInvasions.NetProtocol {
-	public static class ClientPacketHandlers {
+	static class ClientPacketHandlers {
 		public static void HandlePacket( DynamicInvasionsMod mymod, BinaryReader reader ) {
 			NetProtocolTypes protocol = (NetProtocolTypes)reader.ReadByte();
 
@@ -93,7 +93,7 @@ namespace DynamicInvasions.NetProtocol {
 			string spawn_info_enc = reader.ReadString();
 			var spawn_info = JsonConfig<List<KeyValuePair<int, ISet<int>>>>.Deserialize( spawn_info_enc );
 
-			var modworld = mymod.GetModWorld<MyModWorld>();
+			var modworld = mymod.GetModWorld<MyWorld>();
 			modworld.Logic.StartInvasion( mymod, music_type, spawn_info.AsReadOnly() );
 		}
 
@@ -101,7 +101,7 @@ namespace DynamicInvasions.NetProtocol {
 			// Clients only
 			if( Main.netMode != 1 ) { return; }
 			
-			var modworld = mymod.GetModWorld<MyModWorld>();
+			var modworld = mymod.GetModWorld<MyWorld>();
 
 			modworld.Logic.MyNetReceive( reader );
 		}

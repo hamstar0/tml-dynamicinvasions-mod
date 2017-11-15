@@ -11,7 +11,9 @@ using DynamicInvasions.Invasion;
 
 
 namespace DynamicInvasions {
-    public class DynamicInvasionsMod : Mod {
+    class DynamicInvasionsMod : Mod {
+		public static DynamicInvasionsMod Instance { get; private set; }
+
 		public static string GithubUserName { get { return "hamstar0"; } }
 		public static string GithubProjectName { get { return "tml-dynamicinvasions-mod"; } }
 
@@ -19,12 +21,13 @@ namespace DynamicInvasions {
 			get { return ConfigurationDataBase.RelativePath + Path.DirectorySeparatorChar + DynamicInvasionsConfigData.ConfigFileName; }
 		}
 		public static void ReloadConfigFromFile() {
-			if( DynamicInvasionsMod.Instance != null && Main.netMode != 1 ) {
+			if( Main.netMode != 0 ) {
+				throw new Exception( "Cannot reload configs outside of single player." );
+			}
+			if( DynamicInvasionsMod.Instance != null ) {
 				DynamicInvasionsMod.Instance.Config.LoadFile();
 			}
 		}
-
-		public static DynamicInvasionsMod Instance { get; private set; }
 
 
 		////////////////
@@ -40,7 +43,13 @@ namespace DynamicInvasions {
 				AutoloadGores = true,
 				AutoloadSounds = true
 			};
-			
+
+			var hamhelpmod = ModLoader.GetMod( "HamstarHelpers" );
+			var min_ver = new Version( 1, 2, 0 );
+			if( hamhelpmod.Version < min_ver ) {
+				throw new Exception( "Hamstar Helpers must be version " + min_ver.ToString() + " or greater." );
+			}
+
 			this.Config = new JsonConfig<DynamicInvasionsConfigData>( DynamicInvasionsConfigData.ConfigFileName,
 				ConfigurationDataBase.RelativePath, new DynamicInvasionsConfigData() );
 		}
@@ -48,10 +57,12 @@ namespace DynamicInvasions {
 		////////////////
 
 		public override void Load() {
+			DynamicInvasionsMod.Instance = this;
+
 			var hamhelpmod = ModLoader.GetMod( "HamstarHelpers" );
-			var min_ver = new Version( 1, 0, 17 );
+			var min_ver = new Version( 1, 2, 0 );
 			if( hamhelpmod.Version < min_ver ) {
-				throw new Exception( "Hamstar's Helpers must be version "+ min_ver.ToString()+" or greater." );
+				throw new Exception( "Hamstar Helpers must be version "+ min_ver.ToString()+" or greater." );
 			}
 
 			this.LoadConfig();
@@ -75,9 +86,13 @@ namespace DynamicInvasions {
 			}
 		}
 
+		public override void Unload() {
+			DynamicInvasionsMod.Instance = null;
+		}
+
 
 		////////////////
-		
+
 		public override void HandlePacket( BinaryReader reader, int player_who ) {
 			if( Main.netMode == 1 ) {   // Client
 				ClientPacketHandlers.HandlePacket( this, reader );
@@ -93,7 +108,7 @@ namespace DynamicInvasions {
 			if( !this.Config.Data.Enabled ) { return; }
 
 			if( Main.myPlayer != -1 && !Main.gameMenu && Main.LocalPlayer.active ) {
-				var modworld = this.GetModWorld<MyModWorld>();
+				var modworld = this.GetModWorld<MyWorld>();
 				modworld.Logic.UpdateMusic( ref music );
 			}
 		}
@@ -106,7 +121,7 @@ namespace DynamicInvasions {
 			if( idx != -1 ) {
 				var func = new GameInterfaceDrawMethod( delegate() {
 						if( Main.netMode != 2 ) {  // Not server
-						var modworld = this.GetModWorld<MyModWorld>();
+						var modworld = this.GetModWorld<MyWorld>();
 
 						if( modworld.Logic.RunProgressBarAnimation() ) {
 							modworld.Logic.DrawProgressBar( Main.spriteBatch );

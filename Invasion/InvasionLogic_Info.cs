@@ -6,7 +6,7 @@ using Terraria.Localization;
 
 
 namespace DynamicInvasions.Invasion {
-	public partial class InvasionLogic {
+	partial class InvasionLogic {
 		public bool RunProgressBarAnimation() {
 			if( this.Data.InvasionEnrouteDuration > 0 ) {
 				this.Data.InvasionProgressIntroAnimation = 160;

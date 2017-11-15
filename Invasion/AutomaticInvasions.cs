@@ -4,7 +4,7 @@ using Terraria;
 using Terraria.ModLoader;
 
 namespace DynamicInvasions.Invasion {
-	public partial class AutomaticInvasions {
+	partial class AutomaticInvasions {
 		public AutomaticInvasions() {
 			WorldHelpers.AddDayHook( "dynamic_invasion", new Action( delegate {
 				var mymod = (DynamicInvasionsMod)ModLoader.GetMod("DynamicInvasions");

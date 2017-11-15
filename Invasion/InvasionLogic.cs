@@ -9,10 +9,10 @@ using Terraria.ModLoader.IO;
 
 
 namespace DynamicInvasions.Invasion {
-	public partial class InvasionLogic {
+	partial class InvasionLogic {
 		public static Texture2D ProgressBarTexture { get; private set; }
 
-		public static void ModLoad( DynamicInvasionsMod mymod ) {
+		internal static void ModLoad( DynamicInvasionsMod mymod ) {
 			if( InvasionLogic.ProgressBarTexture == null && !Main.dedServ ) {	// Not server
 				InvasionLogic.ProgressBarTexture = mymod.GetTexture( "InvasionIcon" );
 			}
