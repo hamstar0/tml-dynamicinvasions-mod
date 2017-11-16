@@ -44,12 +44,6 @@ namespace DynamicInvasions {
 				AutoloadSounds = true
 			};
 
-			var hamhelpmod = ModLoader.GetMod( "HamstarHelpers" );
-			var min_ver = new Version( 1, 2, 0 );
-			if( hamhelpmod.Version < min_ver ) {
-				throw new Exception( "Hamstar Helpers must be version " + min_ver.ToString() + " or greater." );
-			}
-
 			this.Config = new JsonConfig<DynamicInvasionsConfigData>( DynamicInvasionsConfigData.ConfigFileName,
 				ConfigurationDataBase.RelativePath, new DynamicInvasionsConfigData() );
 		}
@@ -62,7 +56,7 @@ namespace DynamicInvasions {
 			var hamhelpmod = ModLoader.GetMod( "HamstarHelpers" );
 			var min_ver = new Version( 1, 2, 0 );
 			if( hamhelpmod.Version < min_ver ) {
-				throw new Exception( "Hamstar Helpers must be version "+ min_ver.ToString()+" or greater." );
+				throw new Exception( "Hamstar Helpers must be version " + min_ver.ToString() + " or greater." );
 			}
 
 			this.LoadConfig();
