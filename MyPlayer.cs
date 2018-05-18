@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 
 namespace DynamicInvasions {
-	class MyPlayer : ModPlayer {
+	class DynamicInvasionsPlayer : ModPlayer {
 		public bool HasEnteredWorld = false;
 
 
@@ -15,7 +15,7 @@ namespace DynamicInvasions {
 		}
 
 		public override void clientClone( ModPlayer client_clone ) {
-			var clone = (MyPlayer)client_clone;
+			var clone = (DynamicInvasionsPlayer)client_clone;
 			clone.HasEnteredWorld = this.HasEnteredWorld;
 		}
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 
+
 namespace DynamicInvasions {
 	public static class DynamicInvasionsAPI {
 		public static DynamicInvasionsConfigData GetModSettings() {

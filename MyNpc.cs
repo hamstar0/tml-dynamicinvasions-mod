@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 
 namespace DynamicInvasions {
-	class MyNpc : GlobalNPC {
+	class DynamicInvasionsNpc : GlobalNPC {
 		public override void EditSpawnRate( Player player, ref int spawn_rate, ref int max_spawns ) {
 			var mymod = (DynamicInvasionsMod)this.mod;
 			if( !mymod.Config.Data.Enabled ) { return; }
@@ -30,10 +30,13 @@ namespace DynamicInvasions {
 
 		public override bool PreNPCLoot( NPC npc ) {
 			var mymod = (DynamicInvasionsMod)this.mod;
-			if( !mymod.Config.Data.Enabled ) { return base.CheckDead( npc ); }
+			if( !mymod.Config.Data.Enabled ) { return base.PreNPCLoot( npc ); }
 			var modworld = this.mod.GetModWorld<MyWorld>();
 
-			if( modworld.Logic.HasInvasionFinishedArriving() && WorldHelpers.IsAboveWorldSurface( npc.position ) ) {
+			bool has_invasion_arrived = modworld.Logic.HasInvasionFinishedArriving();
+			bool is_above_surface = WorldHelpers.IsAboveWorldSurface( npc.position );
+
+			if( has_invasion_arrived && is_above_surface ) {
 				float chance_percent = mymod.Config.Data.InvaderLootDropPercentChance;
 				return Main.rand.NextFloat() < chance_percent;
 			}

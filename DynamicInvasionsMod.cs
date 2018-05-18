@@ -25,7 +25,9 @@ namespace DynamicInvasions {
 				throw new Exception( "Cannot reload configs outside of single player." );
 			}
 			if( DynamicInvasionsMod.Instance != null ) {
-				DynamicInvasionsMod.Instance.Config.LoadFile();
+				if( !DynamicInvasionsMod.Instance.Config.LoadFile() ) {
+					DynamicInvasionsMod.Instance.Config.SaveFile();
+				}
 			}
 		}
 
