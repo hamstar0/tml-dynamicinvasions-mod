@@ -60,9 +60,9 @@
     <Compile Include="Invasion\InvasionLogic.cs" />
     <Compile Include="DynamicInvasionsMod.cs" />
     <Compile Include="Invasion\InvasionData.cs" />
-    <Compile Include="MyNpc.cs" />
-    <Compile Include="MyPlayer.cs" />
-    <Compile Include="MyWorld.cs" />
+    <Compile Include="DynamicInvasionsNpc.cs" />
+    <Compile Include="DynamicInvasionsPlayer.cs" />
+    <Compile Include="DynamicInvasionsWorld.cs" />
     <Compile Include="Items\CrossDimensionalAggregatorItem.cs" />
     <Compile Include="Items\AggregatorItemInfo.cs" />
     <Compile Include="NetProtocol\ClientPacketHandlers.cs" />

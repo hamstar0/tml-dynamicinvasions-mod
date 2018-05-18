@@ -66,7 +66,7 @@ namespace DynamicInvasions.NetProtocol {
 			if( Main.netMode != 2 ) { return; }
 
 			ModPacket packet = mymod.GetPacket();
-			var modworld = mymod.GetModWorld<MyWorld>();
+			var modworld = mymod.GetModWorld<DynamicInvasionsWorld>();
 
 			packet.Write( (byte)NetProtocolTypes.InvasionStatus );
 			modworld.Logic.MyNetSend( packet );
@@ -95,7 +95,7 @@ namespace DynamicInvasions.NetProtocol {
 			string spawn_info_enc = reader.ReadString();
 			var spawn_info = JsonConfig<List<KeyValuePair<int, ISet<int>>>>.Deserialize( spawn_info_enc );
 
-			var modworld = mymod.GetModWorld<MyWorld>();
+			var modworld = mymod.GetModWorld<DynamicInvasionsWorld>();
 			modworld.Logic.StartInvasion( mymod, music_type, spawn_info.AsReadOnly() );
 
 			for( int i = 0; i < Main.player.Length; i++ ) {

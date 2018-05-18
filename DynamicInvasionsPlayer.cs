@@ -44,7 +44,7 @@ namespace DynamicInvasions {
 			if( !mymod.Config.Data.Enabled ) { return; }
 
 			if( this.player.whoAmI == Main.myPlayer ) {
-				var modworld = this.mod.GetModWorld<MyWorld>();
+				var modworld = this.mod.GetModWorld<DynamicInvasionsWorld>();
 				modworld.Logic.Update( mymod );
 			}
 		}

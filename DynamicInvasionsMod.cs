@@ -104,7 +104,7 @@ namespace DynamicInvasions {
 			if( !this.Config.Data.Enabled ) { return; }
 
 			if( Main.myPlayer != -1 && !Main.gameMenu && Main.LocalPlayer.active ) {
-				var modworld = this.GetModWorld<MyWorld>();
+				var modworld = this.GetModWorld<DynamicInvasionsWorld>();
 				modworld.Logic.UpdateMusic( ref music );
 			}
 		}
@@ -117,7 +117,7 @@ namespace DynamicInvasions {
 			if( idx != -1 ) {
 				var func = new GameInterfaceDrawMethod( delegate() {
 						if( Main.netMode != 2 ) {  // Not server
-						var modworld = this.GetModWorld<MyWorld>();
+						var modworld = this.GetModWorld<DynamicInvasionsWorld>();
 
 						if( modworld.Logic.RunProgressBarAnimation() ) {
 							modworld.Logic.DrawProgressBar( Main.spriteBatch );

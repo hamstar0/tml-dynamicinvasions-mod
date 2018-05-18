@@ -5,7 +5,7 @@ using Terraria.ModLoader.IO;
 
 
 namespace DynamicInvasions {
-	class MyWorld : ModWorld {
+	class DynamicInvasionsWorld : ModWorld {
 		public InvasionLogic Logic { get; private set; }
 
 
