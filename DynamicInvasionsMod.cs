@@ -1,11 +1,11 @@
-﻿using HamstarHelpers.DebugHelpers;
-using HamstarHelpers.Utilities.Config;
+﻿using HamstarHelpers.Helpers.DebugHelpers;
+using HamstarHelpers.Components.Config;
 using System;
-using Terraria.ModLoader;
 using System.Collections.Generic;
+using System.IO;
+using Terraria.ModLoader;
 using Terraria.UI;
 using Terraria;
-using System.IO;
 using DynamicInvasions.NetProtocol;
 using DynamicInvasions.Invasion;
 
@@ -25,16 +25,29 @@ namespace DynamicInvasions {
 				throw new Exception( "Cannot reload configs outside of single player." );
 			}
 			if( DynamicInvasionsMod.Instance != null ) {
-				if( !DynamicInvasionsMod.Instance.Config.LoadFile() ) {
-					DynamicInvasionsMod.Instance.Config.SaveFile();
+				if( !DynamicInvasionsMod.Instance.ConfigJson.LoadFile() ) {
+					DynamicInvasionsMod.Instance.ConfigJson.SaveFile();
 				}
 			}
+		}
+
+		public static void ResetConfigFromDefaults() {
+			if( Main.netMode != 0 ) {
+				throw new Exception( "Cannot reset to default configs outside of single player." );
+			}
+
+			var new_config = new DynamicInvasionsConfigData();
+			//new_config.SetDefaults();
+
+			DynamicInvasionsMod.Instance.ConfigJson.SetData( new_config );
+			DynamicInvasionsMod.Instance.ConfigJson.SaveFile();
 		}
 
 
 		////////////////
 
-		public JsonConfig<DynamicInvasionsConfigData> Config { get; private set; }
+		public JsonConfig<DynamicInvasionsConfigData> ConfigJson { get; private set; }
+		public DynamicInvasionsConfigData Config { get { return this.ConfigJson.Data; } }
 
 
 		////////////////
@@ -46,7 +59,7 @@ namespace DynamicInvasions {
 				AutoloadSounds = true
 			};
 
-			this.Config = new JsonConfig<DynamicInvasionsConfigData>( DynamicInvasionsConfigData.ConfigFileName,
+			this.ConfigJson = new JsonConfig<DynamicInvasionsConfigData>( DynamicInvasionsConfigData.ConfigFileName,
 				ConfigurationDataBase.RelativePath, new DynamicInvasionsConfigData() );
 		}
 
@@ -68,17 +81,17 @@ namespace DynamicInvasions {
 
 		private void LoadConfig() {
 			try {
-				if( !this.Config.LoadFile() ) {
-					this.Config.SaveFile();
+				if( !this.ConfigJson.LoadFile() ) {
+					this.ConfigJson.SaveFile();
 				}
 			} catch( Exception e ) {
-				DebugHelpers.Log( e.Message );
-				this.Config.SaveFile();
+				LogHelpers.Log( e.Message );
+				this.ConfigJson.SaveFile();
 			}
 
-			if( this.Config.Data.UpdateToLatestVersion() ) {
+			if( this.ConfigJson.Data.UpdateToLatestVersion() ) {
 				ErrorLogger.Log( "Dynamic Invasions updated to " + DynamicInvasionsConfigData.ConfigVersion.ToString() );
-				this.Config.SaveFile();
+				this.ConfigJson.SaveFile();
 			}
 		}
 
@@ -101,7 +114,7 @@ namespace DynamicInvasions {
 		////////////////
 		
 		public override void UpdateMusic( ref int music ) {
-			if( !this.Config.Data.Enabled ) { return; }
+			if( !this.ConfigJson.Data.Enabled ) { return; }
 
 			if( Main.myPlayer != -1 && !Main.gameMenu && Main.LocalPlayer.active ) {
 				var modworld = this.GetModWorld<DynamicInvasionsWorld>();
@@ -111,7 +124,7 @@ namespace DynamicInvasions {
 
 
 		public override void ModifyInterfaceLayers( List<GameInterfaceLayer> layers ) {
-			if( !this.Config.Data.Enabled ) { return; }
+			if( !this.ConfigJson.Data.Enabled ) { return; }
 			int idx = layers.FindIndex( layer => layer.Name.Equals( "Vanilla: Invasion Progress Bars" ) );
 
 			if( idx != -1 ) {
@@ -129,19 +142,6 @@ namespace DynamicInvasions {
 
 				layers.Insert( idx, layer );
 			}
-		}
-
-		
-		////////////////
-
-		public bool IsDebugInfoMode() {
-			return (this.Config.Data.DEBUGFLAGS & 1) > 0;
-		}
-		public bool IsForcedResetMode() {
-			return (this.Config.Data.DEBUGFLAGS & 2) > 0;
-		}
-		public bool IsCheatMode() {
-			return (this.Config.Data.DEBUGFLAGS & 4) > 0;
 		}
 	}
 }

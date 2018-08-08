@@ -1,6 +1,6 @@
-﻿using HamstarHelpers.ItemHelpers;
-using HamstarHelpers.NPCHelpers;
-using HamstarHelpers.Utilities.Config;
+﻿using HamstarHelpers.Components.Config;
+using HamstarHelpers.Helpers.ItemHelpers;
+using HamstarHelpers.Helpers.NPCHelpers;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -133,7 +133,7 @@ namespace DynamicInvasions.Items {
 			var list = AggregatorItemInfo.GetNpcSetsOfBanners( banner_item_types );
 
 			this.IsInitialized = true;
-			this.MusicType = ItemMusicBoxHelpers.GetMusicTypeOfMusicBox( music_box_item_type );
+			this.MusicType = MusicBoxHelpers.GetMusicTypeOfVanillaMusicBox( music_box_item_type );
 			this.BannerItemTypesToNpcTypes = new List<KeyValuePair<int, ISet<int>>>( list ).AsReadOnly();
 		}
 

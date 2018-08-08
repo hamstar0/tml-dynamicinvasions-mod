@@ -13,7 +13,9 @@ namespace DynamicInvasions {
 
 		public bool Enabled = true;
 
-		public int DEBUGFLAGS = 0;	// 1: Info; 2: Reset; 4: Cheaty mode
+		public bool DebugModeInfo = false;
+		public bool DebugModeReset = false;
+		public bool DebugModeCheat = false;
 
 		public bool CraftableAggregators = true;
 		public int BannersPerAggregator = 5;

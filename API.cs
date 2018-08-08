@@ -4,7 +4,7 @@
 namespace DynamicInvasions {
 	public static class DynamicInvasionsAPI {
 		public static DynamicInvasionsConfigData GetModSettings() {
-			return DynamicInvasionsMod.Instance.Config.Data;
+			return DynamicInvasionsMod.Instance.ConfigJson.Data;
 		}
 
 

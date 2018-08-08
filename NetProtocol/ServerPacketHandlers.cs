@@ -1,5 +1,5 @@
-﻿using HamstarHelpers.DebugHelpers;
-using HamstarHelpers.Utilities.Config;
+﻿using HamstarHelpers.Components.Config;
+using HamstarHelpers.Helpers.DebugHelpers;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
@@ -13,19 +13,19 @@ namespace DynamicInvasions.NetProtocol {
 
 			switch( protocol ) {
 			case NetProtocolTypes.RequestModSettings:
-				if( mymod.IsDebugInfoMode() ) { DebugHelpers.Log( "ServerPacketHandlers.RequestModSettings" ); }
+				if( mymod.Config.DebugModeInfo ) { LogHelpers.Log( "ServerPacketHandlers.RequestModSettings" ); }
 				ServerPacketHandlers.ReceiveModSettingsRequestOnServer( mymod, reader, player_who );
 				break;
 			case NetProtocolTypes.RequestInvasion:
-				if( mymod.IsDebugInfoMode() ) { DebugHelpers.Log( "ServerPacketHandlers.RequestInvasion" ); }
+				if( mymod.Config.DebugModeInfo ) { LogHelpers.Log( "ServerPacketHandlers.RequestInvasion" ); }
 				ServerPacketHandlers.ReceiveInvasionRequestOnServer( mymod, reader, player_who );
 				break;
 			case NetProtocolTypes.RequestInvasionStatus:
-				if( mymod.IsDebugInfoMode() ) { DebugHelpers.Log( "ServerPacketHandlers.RequestInvasionStatus" ); }
+				if( mymod.Config.DebugModeInfo ) { LogHelpers.Log( "ServerPacketHandlers.RequestInvasionStatus" ); }
 				ServerPacketHandlers.ReceiveInvasionStatusRequestOnServer( mymod, reader, player_who );
 				break;
 			default:
-				if( mymod.IsDebugInfoMode() ) { DebugHelpers.Log( "ServerPacketHandlers ...? " + protocol ); }
+				if( mymod.Config.DebugModeInfo ) { LogHelpers.Log( "ServerPacketHandlers ...? " + protocol ); }
 				break;
 			}
 		}
@@ -43,7 +43,7 @@ namespace DynamicInvasions.NetProtocol {
 			ModPacket packet = mymod.GetPacket();
 
 			packet.Write( (byte)NetProtocolTypes.ModSettings );
-			packet.Write( (string)mymod.Config.SerializeMe() );
+			packet.Write( (string)mymod.ConfigJson.SerializeMe() );
 
 			packet.Send( (int)player.whoAmI );
 		}

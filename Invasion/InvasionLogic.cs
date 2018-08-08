@@ -1,4 +1,4 @@
-﻿using HamstarHelpers.DebugHelpers;
+﻿using HamstarHelpers.Helpers.DebugHelpers;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.IO;
@@ -67,9 +67,9 @@ namespace DynamicInvasions.Invasion {
 			var spawn_npcs = spawn_info.SelectMany( id => id.Value ).ToList();
 			int size = 0;
 
-			if( mymod.IsDebugInfoMode() ) {
+			if( mymod.Config.DebugModeInfo ) {
 				string str = string.Join( ",", spawn_npcs.ToArray() );
-				DebugHelpers.Log( "starting invasion music: " + music_type + ", npcs: " + str );
+				LogHelpers.Log( "starting invasion music: " + music_type + ", npcs: " + str );
 			}
 			
 			int invadable_player_count = 0;
@@ -82,15 +82,15 @@ namespace DynamicInvasions.Invasion {
 				invadable_player_count = 1;
 			}
 
-			if( mymod.IsCheatMode() ) {
+			if( mymod.Config.DebugModeCheat ) {
 				size = 30;
 			} else {
-				int base_amt = mymod.Config.Data.InvasionMinSize;
-				int per_player_amt = mymod.Config.Data.InvasionAddedSizePerStrongPlayer;
+				int base_amt = mymod.ConfigJson.Data.InvasionMinSize;
+				int per_player_amt = mymod.ConfigJson.Data.InvasionAddedSizePerStrongPlayer;
 				size = base_amt + (per_player_amt * invadable_player_count);
 			}
 
-			this.Data.Initialize( true, size, size, 60 * mymod.Config.Data.InvasionArrivalTimeInSeconds, 0, 0, music_type, spawn_npcs );
+			this.Data.Initialize( true, size, size, 60 * mymod.ConfigJson.Data.InvasionArrivalTimeInSeconds, 0, 0, music_type, spawn_npcs );
 		}
 
 		
@@ -115,7 +115,7 @@ namespace DynamicInvasions.Invasion {
 		////////////////
 
 		public void Update( DynamicInvasionsMod mymod ) {
-			if( mymod.IsDebugInfoMode() ) {
+			if( mymod.Config.DebugModeInfo ) {
 				DebugHelpers.Display["info"] = "IsInvading: "+this.Data.IsInvading+
 					", : enroute: "+this.Data.InvasionEnrouteDuration+
 					", size: "+this.Data.InvasionSize+

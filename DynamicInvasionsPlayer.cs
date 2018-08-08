@@ -1,6 +1,6 @@
 ﻿using DynamicInvasions.Items;
 using DynamicInvasions.NetProtocol;
-using HamstarHelpers.PlayerHelpers;
+using HamstarHelpers.Helpers.PlayerHelpers;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -24,8 +24,8 @@ namespace DynamicInvasions {
 				var mymod = (DynamicInvasionsMod)this.mod;
 
 				if( Main.netMode != 2 ) {   // Not server
-					if( !mymod.Config.LoadFile() ) {
-						mymod.Config.SaveFile();
+					if( !mymod.ConfigJson.LoadFile() ) {
+						mymod.ConfigJson.SaveFile();
 					}
 				}
 
@@ -41,7 +41,7 @@ namespace DynamicInvasions {
 
 		public override void PreUpdate() {
 			var mymod = (DynamicInvasionsMod)this.mod;
-			if( !mymod.Config.Data.Enabled ) { return; }
+			if( !mymod.ConfigJson.Data.Enabled ) { return; }
 
 			if( this.player.whoAmI == Main.myPlayer ) {
 				var modworld = this.mod.GetModWorld<DynamicInvasionsWorld>();

@@ -1,8 +1,8 @@
 ﻿using DynamicInvasions.NetProtocol;
-using HamstarHelpers.DebugHelpers;
-using HamstarHelpers.ItemHelpers;
-using HamstarHelpers.NPCHelpers;
-using HamstarHelpers.PlayerHelpers;
+using HamstarHelpers.Helpers.DebugHelpers;
+using HamstarHelpers.Helpers.ItemHelpers;
+using HamstarHelpers.Helpers.NPCHelpers;
+using HamstarHelpers.Helpers.PlayerHelpers;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -39,7 +39,7 @@ namespace DynamicInvasions.Items {
 
 		public override bool CanUseItem( Player player ) {
 			var mymod = (DynamicInvasionsMod)this.mod;
-			if( !mymod.Config.Data.Enabled ) { return false; }
+			if( !mymod.ConfigJson.Data.Enabled ) { return false; }
 
 			var modworld = mymod.GetModWorld<DynamicInvasionsWorld>();
 			var item_info = this.item.GetGlobalItem<AggregatorItemInfo>();
@@ -53,7 +53,7 @@ namespace DynamicInvasions.Items {
 				return false;
 			}
 
-			Item fuel_item = PlayerItemHelpers.FindFirstOfItemFor( player, new HashSet<int> { ItemID.DD2ElderCrystal } );
+			Item fuel_item = PlayerItemFinderHelpers.FindFirstOfItemFor( player, new HashSet<int> { ItemID.DD2ElderCrystal } );
 			int fuel_cost = this.GetFuelCost();
 			bool has_fuel = fuel_item != null && !fuel_item.IsAir && fuel_cost <= fuel_item.stack;
 			if( !has_fuel ) {
@@ -82,7 +82,7 @@ namespace DynamicInvasions.Items {
 		
 		public override void AddRecipes() {
 			var mymod = (DynamicInvasionsMod)this.mod;
-			var myrecipe = new InterdimensionaAggregatorItemRecipe( mymod, mymod.Config.Data.BannersPerAggregator );
+			var myrecipe = new InterdimensionaAggregatorItemRecipe( mymod, mymod.ConfigJson.Data.BannersPerAggregator );
 			myrecipe.AddRecipe();
 		}
 
@@ -118,19 +118,19 @@ namespace DynamicInvasions.Items {
 
 		public int GetFuelCost() {
 			var mymod = (DynamicInvasionsMod)this.mod;
-			if( mymod.IsCheatMode()) {
+			if( mymod.Config.DebugModeCheat ) {
 				return 0;
 			}
 
 			int uses = this.item.GetGlobalItem<AggregatorItemInfo>().Uses;
 
-			return (int)((float)(uses + 1) * mymod.Config.Data.AggregatorFuelCostMultiplier);
+			return (int)((float)(uses + 1) * mymod.ConfigJson.Data.AggregatorFuelCostMultiplier);
 		}
 
 		////////////////
 
 		private bool CanStartInvasion( Player player, out Item fuel_item ) {
-			fuel_item = PlayerItemHelpers.FindFirstOfItemFor( player, new HashSet<int> { ItemID.DD2ElderCrystal } );
+			fuel_item = PlayerItemFinderHelpers.FindFirstOfItemFor( player, new HashSet<int> { ItemID.DD2ElderCrystal } );
 			if( fuel_item == null || fuel_item.IsAir ) {
 				return false;
 			}
@@ -158,7 +158,7 @@ namespace DynamicInvasions.Items {
 			var item_info = this.item.GetGlobalItem<AggregatorItemInfo>();
 			int fuel_cost = this.GetFuelCost();
 
-			if( mymod.IsDebugInfoMode() ) {
+			if( mymod.Config.DebugModeInfo ) {
 				Main.NewText( "Activating invasion..." );
 			}
 
@@ -175,6 +175,7 @@ namespace DynamicInvasions.Items {
 
 
 
+
 	class InterdimensionaAggregatorItemRecipe : ModRecipe {
 		public int BannerCount { get; private set; }
 
@@ -187,10 +188,10 @@ namespace DynamicInvasions.Items {
 
 			this.AddTile( TileID.TinkerersWorkbench );
 
-			if( !mymod.IsCheatMode() ) {
+			if( !mymod.Config.DebugModeCheat ) {
 				this.AddRecipeGroup( "HamstarHelpers:MagicMirrors", 1 );
-				this.AddIngredient( ItemID.DarkShard, 1 );  //ItemID.Obsidian
-				this.AddIngredient( ItemID.LightShard, 1 ); //ItemID.Cloud
+				//this.AddIngredient( ItemID.DarkShard, 1 );  //ItemID.Obsidian
+				//this.AddIngredient( ItemID.LightShard, 1 ); //ItemID.Cloud
 			}
 
 			this.AddRecipeGroup( "HamstarHelpers:RecordedMusicBoxes", 1 );
@@ -200,12 +201,12 @@ namespace DynamicInvasions.Items {
 
 		public override int ConsumeItem( int item_type, int num_required ) {
 			var mymod = (DynamicInvasionsMod)this.mod;
-			var music_item_types = ItemMusicBoxHelpers.GetMusicBoxes();
+			var music_item_types = MusicBoxHelpers.GetVanillaMusicBoxItemIds();
 			var banner_item_types = NPCBannerHelpers.GetBannerItemTypes();
 			Item[] inv = Main.LocalPlayer.inventory;
-
+			
 			if( banner_item_types.Contains(item_type) ) {
-				SortedSet<int> banner_items = ItemFinderHelpers.FindIndexOfEachItemInCollection( inv, banner_item_types );
+				ISet<int> banner_items = ItemFinderHelpers.FindIndexOfEach( inv, banner_item_types );
 
 				this.BannerItemTypes = new List<int>();
 				
@@ -225,10 +226,10 @@ namespace DynamicInvasions.Items {
 				}
 			}
 
-			if( mymod.IsDebugInfoMode() ) {
+			if( mymod.Config.DebugModeInfo ) {
 				Item item = new Item();
 				item.SetDefaults( item_type );
-				DebugHelpers.Log( "consumed "+num_required+" of "+item_type+" ("+item.Name+")" );
+				LogHelpers.Log( "consumed "+num_required+" of "+item_type+" ("+item.Name+")" );
 			}
 
 			return num_required;
@@ -245,9 +246,9 @@ namespace DynamicInvasions.Items {
 
 		public override bool RecipeAvailable() {
 			var mymod = (DynamicInvasionsMod)this.mod;
-			if( !mymod.Config.Data.Enabled ) { return false; }
+			if( !mymod.ConfigJson.Data.Enabled ) { return false; }
 			
-			return mymod.Config.Data.CraftableAggregators;
+			return mymod.ConfigJson.Data.CraftableAggregators;
 		}
 	}
 }
