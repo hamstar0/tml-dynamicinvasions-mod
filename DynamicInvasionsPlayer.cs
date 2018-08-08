@@ -10,6 +10,10 @@ namespace DynamicInvasions {
 		public bool HasEnteredWorld = false;
 
 
+		////////////////
+
+		public override bool CloneNewInstances { get { return false; } }
+
 		public override void Initialize() {
 			this.HasEnteredWorld = false;
 		}
@@ -19,25 +23,31 @@ namespace DynamicInvasions {
 			clone.HasEnteredWorld = this.HasEnteredWorld;
 		}
 
+
+		////////////////
+
 		public override void OnEnterWorld( Player player ) {
-			if( this.player.whoAmI == Main.myPlayer ) {
-				var mymod = (DynamicInvasionsMod)this.mod;
+			if( player.whoAmI == Main.myPlayer ) { return; }
+			if( this.player.whoAmI == Main.myPlayer ) { return; }
 
-				if( Main.netMode != 2 ) {   // Not server
-					if( !mymod.ConfigJson.LoadFile() ) {
-						mymod.ConfigJson.SaveFile();
-					}
+			var mymod = (DynamicInvasionsMod)this.mod;
+
+			if( Main.netMode != 2 ) {   // Not server
+				if( !mymod.ConfigJson.LoadFile() ) {
+					mymod.ConfigJson.SaveFile();
 				}
-
-				if( Main.netMode == 1 ) {   // Client
-					ClientPacketHandlers.SendModSettingsRequestFromClient( mymod );
-					ClientPacketHandlers.SendInvasionStatusRequestFromClient( mymod );
-				}
-
-				this.HasEnteredWorld = true;
 			}
+
+			if( Main.netMode == 1 ) {   // Client
+				ClientPacketHandlers.SendModSettingsRequestFromClient( mymod );
+				ClientPacketHandlers.SendInvasionStatusRequestFromClient( mymod );
+			}
+
+			this.HasEnteredWorld = true;
 		}
 
+
+		////////////////
 
 		public override void PreUpdate() {
 			var mymod = (DynamicInvasionsMod)this.mod;
@@ -49,6 +59,7 @@ namespace DynamicInvasions {
 			}
 		}
 
+		////////////////
 
 		public override bool PreItemCheck() {
 			if( this.player.itemAnimation > 0 ) {
