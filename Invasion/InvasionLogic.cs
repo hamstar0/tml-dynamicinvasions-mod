@@ -116,10 +116,12 @@ namespace DynamicInvasions.Invasion {
 
 		public void Update( DynamicInvasionsMod mymod ) {
 			if( mymod.Config.DebugModeInfo ) {
-				DebugHelpers.Display["info"] = "IsInvading: "+this.Data.IsInvading+
+				DebugHelpers.Print( "DynamicInvasionInfo", "IsInvading: "+this.Data.IsInvading+
 					", : enroute: "+this.Data.InvasionEnrouteDuration+
 					", size: "+this.Data.InvasionSize+
-					", max: "+this.Data.InvasionSizeStart;
+					", max: "+this.Data.InvasionSizeStart,
+					20
+				);
 			}
 
 			if( this.Data.IsInvading ) {
