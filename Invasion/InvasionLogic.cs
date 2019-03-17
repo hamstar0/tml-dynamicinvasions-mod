@@ -12,7 +12,9 @@ namespace DynamicInvasions.Invasion {
 	partial class InvasionLogic {
 		public static Texture2D ProgressBarTexture { get; private set; }
 
-		internal static void ModLoad( DynamicInvasionsMod mymod ) {
+		internal static void ModLoad() {
+			var mymod = DynamicInvasionsMod.Instance;
+
 			if( InvasionLogic.ProgressBarTexture == null && !Main.dedServ ) {	// Not server
 				InvasionLogic.ProgressBarTexture = mymod.GetTexture( "InvasionIcon" );
 			}
@@ -25,8 +27,8 @@ namespace DynamicInvasions.Invasion {
 		//private AutomaticInvasions Auto = null;
 
 
-		internal InvasionLogic( DynamicInvasionsMod mymod ) {
-			this.Data = new InvasionData( mymod );
+		internal InvasionLogic() {
+			this.Data = new InvasionData();
 
 			//if( Main.netMode == 0 || Main.netMode == 2 ) {
 			//	this.Auto = new AutomaticInvasions();
@@ -41,20 +43,21 @@ namespace DynamicInvasions.Invasion {
 		internal void MyNetSend( BinaryWriter writer ) { this.Data.MyNetSend( writer ); }
 		internal void MyNetReceive( BinaryReader reader ) { this.Data.MyNetReceive( reader ); }
 
+
 		////////////////
 
-		public bool CanStartInvasion( DynamicInvasionsMod mymod ) {
+		public bool CanStartInvasion() {
 			if( !this.Data.IsInvading && Main.invasionDelay > 0 ) {
 				Main.invasionDelay = 0;	// Failsafe?
 			}
 			
-			int old_max_life = Main.LocalPlayer.statLifeMax;
+			int oldMaxLife = Main.LocalPlayer.statLifeMax;
 
 			Main.LocalPlayer.statLifeMax = 200;
-			bool can_start = Main.CanStartInvasion();
-			Main.LocalPlayer.statLifeMax = old_max_life;
+			bool canStart = Main.CanStartInvasion();
+			Main.LocalPlayer.statLifeMax = oldMaxLife;
 			
-			return can_start;
+			return canStart;
 		}
 
 		public bool HasInvasionFinishedArriving() {
@@ -62,35 +65,35 @@ namespace DynamicInvasions.Invasion {
 		}
 
 
-		public void StartInvasion( DynamicInvasionsMod mymod, int music_type, IReadOnlyList<KeyValuePair<int, ISet<int>>> spawn_info ) {
+		public void StartInvasion( DynamicInvasionsMod mymod, int musicType, IReadOnlyList<KeyValuePair<int, ISet<int>>> spawnInfo ) {
 			Main.invasionDelay = 2; // Lightweight invasion
-			var spawn_npcs = spawn_info.SelectMany( id => id.Value ).ToList();
+			var spawnNpcs = spawnInfo.SelectMany( id => id.Value ).ToList();
 			int size = 0;
 
 			if( mymod.Config.DebugModeInfo ) {
-				string str = string.Join( ",", spawn_npcs.ToArray() );
-				LogHelpers.Log( "starting invasion music: " + music_type + ", npcs: " + str );
+				string str = string.Join( ",", spawnNpcs.ToArray() );
+				LogHelpers.Log( "starting invasion music: " + musicType + ", npcs: " + str );
 			}
 			
-			int invadable_player_count = 0;
+			int invadablePlayerCount = 0;
 			for( int i = 0; i < 255; ++i ) {
 				if( Main.player[i].active && Main.player[i].statLifeMax >= 200 ) {
-					++invadable_player_count;
+					++invadablePlayerCount;
 				}
 			}
-			if( invadable_player_count == 0 ) {
-				invadable_player_count = 1;
+			if( invadablePlayerCount == 0 ) {
+				invadablePlayerCount = 1;
 			}
 
 			if( mymod.Config.DebugModeCheat ) {
 				size = 30;
 			} else {
-				int base_amt = mymod.ConfigJson.Data.InvasionMinSize;
-				int per_player_amt = mymod.ConfigJson.Data.InvasionAddedSizePerStrongPlayer;
-				size = base_amt + (per_player_amt * invadable_player_count);
+				int baseAmt = mymod.ConfigJson.Data.InvasionMinSize;
+				int perPlayerAmt = mymod.ConfigJson.Data.InvasionAddedSizePerStrongPlayer;
+				size = baseAmt + (perPlayerAmt * invadablePlayerCount);
 			}
 
-			this.Data.Initialize( true, size, size, 60 * mymod.ConfigJson.Data.InvasionArrivalTimeInSeconds, 0, 0, music_type, spawn_npcs );
+			this.Data.Initialize( true, size, size, 60 * mymod.ConfigJson.Data.InvasionArrivalTimeInSeconds, 0, 0, musicType, spawnNpcs );
 		}
 
 		
@@ -155,10 +158,10 @@ namespace DynamicInvasions.Invasion {
 
 		////////////////
 
-		public void EditSpawnPool( IDictionary<int, float> pool, NPCSpawnInfo spawn_info ) {
-			foreach( int npc_type in this.Data.SpawnNpcTypeList ) {
-				if( !pool.ContainsKey(npc_type) ) { pool[npc_type] = 1000f; }
-				else { pool[npc_type] += 1000f; }
+		public void EditSpawnPool( IDictionary<int, float> pool, NPCSpawnInfo spawnInfo ) {
+			foreach( int npcType in this.Data.SpawnNpcTypeList ) {
+				if( !pool.ContainsKey(npcType) ) { pool[npcType] = 1000f; }
+				else { pool[npcType] += 1000f; }
 			}
 		}
 	}

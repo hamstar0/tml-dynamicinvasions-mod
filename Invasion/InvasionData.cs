@@ -26,7 +26,9 @@ namespace DynamicInvasions.Invasion {
 
 
 
-		public InvasionData( DynamicInvasionsMod mymod ) {
+		////////////////
+
+		public InvasionData() {
 			var list = new List<int>();
 
 			this.IsInvading = false;
@@ -45,20 +47,20 @@ namespace DynamicInvasions.Invasion {
 		}
 
 
-		public void Initialize( bool is_invading, int size, int start_size, int enroute_time, int warn_time, int intro_time, int music_type, string spawn_npcs_enc ) {
-			var spawn_npcs = JsonConfig<IList<int>>.Deserialize( spawn_npcs_enc );
-			this.Initialize( is_invading, size, start_size, enroute_time, warn_time, intro_time, music_type, spawn_npcs );
+		public void Initialize( bool isInvading, int size, int startSize, int enrouteTime, int warnTime, int introTime, int musicType, string spawn_npcs_enc ) {
+			var spawnNpcs = JsonConfig<IList<int>>.Deserialize( spawn_npcs_enc );
+			this.Initialize( isInvading, size, startSize, enrouteTime, warnTime, introTime, musicType, spawnNpcs );
 		}
 
-		public void Initialize( bool is_invading, int size, int start_size, int enroute_time, int warn_time, int intro_time, int music_type, IList<int> spawn_npcs ) {
-			this.IsInvading = is_invading;
+		public void Initialize( bool isInvading, int size, int startSize, int enrouteTime, int warnTime, int introTime, int musicType, IList<int> spawnNpcs ) {
+			this.IsInvading = isInvading;
 			this.InvasionSize = size;
-			this.InvasionSizeStart = start_size;
-			this.InvasionEnrouteDuration = enroute_time;
-			this.InvasionEnrouteWarningDuration = warn_time;
-			this.InvasionProgressIntroAnimation = intro_time;
-			this.MusicType = music_type;
-			this.SpawnNpcTypeList = spawn_npcs;
+			this.InvasionSizeStart = startSize;
+			this.InvasionEnrouteDuration = enrouteTime;
+			this.InvasionEnrouteWarningDuration = warnTime;
+			this.InvasionProgressIntroAnimation = introTime;
+			this.MusicType = musicType;
+			this.SpawnNpcTypeList = spawnNpcs;
 		}
 
 
@@ -67,16 +69,16 @@ namespace DynamicInvasions.Invasion {
 		public void LoadMe( TagCompound tags ) {
 			if( !tags.ContainsKey( "is_invading" ) ) { return; }
 
-			bool is_invading = tags.GetBool( "is_invading" );
+			bool isInvading = tags.GetBool( "is_invading" );
 			int size = tags.GetInt( "size" );
-			int start_size = tags.GetInt( "start_size" );
-			int enroute_time = tags.GetInt( "enroute_time" );
-			int warn_time = tags.GetInt( "warn_time" );
-			int intro_time = tags.GetInt( "intro_time" );
-			int music_type = tags.GetInt( "music_type" );
-			string spawn_npcs = tags.GetString( "spawn_npcs" );
+			int startSize = tags.GetInt( "start_size" );
+			int enrouteTime = tags.GetInt( "enroute_time" );
+			int warnTime = tags.GetInt( "warn_time" );
+			int introTime = tags.GetInt( "intro_time" );
+			int musicType = tags.GetInt( "music_type" );
+			string spawnNpcs = tags.GetString( "spawn_npcs" );
 
-			this.Initialize( is_invading, size, start_size, enroute_time, warn_time, intro_time, music_type, spawn_npcs );
+			this.Initialize( isInvading, size, startSize, enrouteTime, warnTime, introTime, musicType, spawnNpcs );
 		}
 
 		public TagCompound SaveMe() {
@@ -103,16 +105,16 @@ namespace DynamicInvasions.Invasion {
 		}
 
 		public void MyNetReceive( BinaryReader reader ) {
-			bool is_invading = reader.ReadBoolean();
+			bool isInvading = reader.ReadBoolean();
 			int size = reader.ReadInt32();
-			int start_size = reader.ReadInt32();
-			int enroute_time = reader.ReadInt32();
-			int warn_time = reader.ReadInt32();
-			int intro_time = reader.ReadInt32();
-			int music_type = reader.ReadInt32();
-			string spawn_npcs = reader.ReadString();
+			int startSize = reader.ReadInt32();
+			int enrouteTime = reader.ReadInt32();
+			int warnTime = reader.ReadInt32();
+			int introTime = reader.ReadInt32();
+			int musicType = reader.ReadInt32();
+			string spawnNpcs = reader.ReadString();
 
-			this.Initialize( is_invading, size, start_size, enroute_time, warn_time, intro_time, music_type, spawn_npcs );
+			this.Initialize( isInvading, size, startSize, enrouteTime, warnTime, introTime, musicType, spawnNpcs );
 		}
 
 

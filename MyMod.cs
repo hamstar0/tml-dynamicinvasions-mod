@@ -8,56 +8,26 @@ using Terraria.UI;
 using Terraria;
 using DynamicInvasions.NetProtocol;
 using DynamicInvasions.Invasion;
+using HamstarHelpers.Helpers.TmlHelpers;
+using HamstarHelpers.Components.Errors;
+using HamstarHelpers.Helpers.TmlHelpers.ModHelpers;
 
 
 namespace DynamicInvasions {
 	partial class DynamicInvasionsMod : Mod {
 		public static DynamicInvasionsMod Instance { get; private set; }
 
-		public static string GithubUserName { get { return "hamstar0"; } }
-		public static string GithubProjectName { get { return "tml-dynamicinvasions-mod"; } }
 
-		public static string ConfigFileRelativePath {
-			get { return ConfigurationDataBase.RelativePath + Path.DirectorySeparatorChar + DynamicInvasionsConfigData.ConfigFileName; }
-		}
-		public static void ReloadConfigFromFile() {
-			if( Main.netMode != 0 ) {
-				throw new Exception( "Cannot reload configs outside of single player." );
-			}
-			if( DynamicInvasionsMod.Instance != null ) {
-				if( !DynamicInvasionsMod.Instance.ConfigJson.LoadFile() ) {
-					DynamicInvasionsMod.Instance.ConfigJson.SaveFile();
-				}
-			}
-		}
-
-		public static void ResetConfigFromDefaults() {
-			if( Main.netMode != 0 ) {
-				throw new Exception( "Cannot reset to default configs outside of single player." );
-			}
-
-			var new_config = new DynamicInvasionsConfigData();
-			//new_config.SetDefaults();
-
-			DynamicInvasionsMod.Instance.ConfigJson.SetData( new_config );
-			DynamicInvasionsMod.Instance.ConfigJson.SaveFile();
-		}
-
-
-		////////////////
 
 		public JsonConfig<DynamicInvasionsConfigData> ConfigJson { get; private set; }
-		public DynamicInvasionsConfigData Config { get { return this.ConfigJson.Data; } }
+		public DynamicInvasionsConfigData Config => this.ConfigJson.Data;
+
 
 
 		////////////////
 
 		public DynamicInvasionsMod() {
-			this.Properties = new ModProperties() {
-				Autoload = true,
-				AutoloadGores = true,
-				AutoloadSounds = true
-			};
+			DynamicInvasionsMod.Instance = this;
 
 			this.ConfigJson = new JsonConfig<DynamicInvasionsConfigData>( DynamicInvasionsConfigData.ConfigFileName,
 				ConfigurationDataBase.RelativePath, new DynamicInvasionsConfigData() );
@@ -66,17 +36,12 @@ namespace DynamicInvasions {
 		////////////////
 
 		public override void Load() {
-			DynamicInvasionsMod.Instance = this;
-
-			var hamhelpmod = ModLoader.GetMod( "HamstarHelpers" );
-			var min_ver = new Version( 1, 2, 0 );
-			if( hamhelpmod.Version < min_ver ) {
-				throw new Exception( "Hamstar Helpers must be version " + min_ver.ToString() + " or greater." );
-			}
+			string depErr = TmlHelpers.ReportBadDependencyMods( this );
+			if( depErr != null ) { throw new HamstarException( depErr ); }
 
 			this.LoadConfig();
 			
-			InvasionLogic.ModLoad( this );
+			InvasionLogic.ModLoad();
 		}
 
 		private void LoadConfig() {
@@ -90,7 +55,7 @@ namespace DynamicInvasions {
 			}
 
 			if( this.ConfigJson.Data.UpdateToLatestVersion() ) {
-				ErrorLogger.Log( "Dynamic Invasions updated to " + DynamicInvasionsConfigData.ConfigVersion.ToString() );
+				ErrorLogger.Log( "Dynamic Invasions updated to " + this.Version.ToString() );
 				this.ConfigJson.SaveFile();
 			}
 		}
@@ -102,17 +67,23 @@ namespace DynamicInvasions {
 
 		////////////////
 
-		public override void HandlePacket( BinaryReader reader, int player_who ) {
+		public override void HandlePacket( BinaryReader reader, int playerWho ) {
 			if( Main.netMode == 1 ) {   // Client
-				ClientPacketHandlers.HandlePacket( this, reader );
+				ClientPacketHandlers.HandlePacket( reader );
 			} else if( Main.netMode == 2 ) {    // Server
-				ServerPacketHandlers.RoutePacket( this, reader, player_who );
+				ServerPacketHandlers.RoutePacket( reader, playerWho );
 			}
+		}
+
+		////////////////
+
+		public override object Call( params object[] args ) {
+			return ModBoilerplateHelpers.HandleModCall( typeof(DynamicInvasionsAPI), args );
 		}
 
 
 		////////////////
-		
+
 		public override void UpdateMusic( ref int music ) {
 			if( !this.ConfigJson.Data.Enabled ) { return; }
 

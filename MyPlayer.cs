@@ -8,18 +8,21 @@ using Terraria.ModLoader;
 namespace DynamicInvasions {
 	class DynamicInvasionsPlayer : ModPlayer {
 		public bool HasEnteredWorld = false;
+		
+		////////////////
 
+		public override bool CloneNewInstances => false;
 
 		////////////////
 
-		public override bool CloneNewInstances { get { return false; } }
+
 
 		public override void Initialize() {
 			this.HasEnteredWorld = false;
 		}
 
-		public override void clientClone( ModPlayer client_clone ) {
-			var clone = (DynamicInvasionsPlayer)client_clone;
+		public override void clientClone( ModPlayer clientClone ) {
+			var clone = (DynamicInvasionsPlayer)clientClone;
 			clone.HasEnteredWorld = this.HasEnteredWorld;
 		}
 
@@ -32,15 +35,15 @@ namespace DynamicInvasions {
 
 			var mymod = (DynamicInvasionsMod)this.mod;
 
-			if( Main.netMode != 2 ) {   // Not server
+			if( Main.netMode == 0 ) {
 				if( !mymod.ConfigJson.LoadFile() ) {
 					mymod.ConfigJson.SaveFile();
 				}
 			}
 
 			if( Main.netMode == 1 ) {   // Client
-				ClientPacketHandlers.SendModSettingsRequestFromClient( mymod );
-				ClientPacketHandlers.SendInvasionStatusRequestFromClient( mymod );
+				ClientPacketHandlers.SendModSettingsRequestFromClient();
+				ClientPacketHandlers.SendInvasionStatusRequestFromClient();
 			}
 
 			this.HasEnteredWorld = true;
@@ -63,10 +66,10 @@ namespace DynamicInvasions {
 
 		public override bool PreItemCheck() {
 			if( this.player.itemAnimation > 0 ) {
-				Item held_item = this.player.HeldItem;
+				Item heldItem = this.player.HeldItem;
 
-				if( held_item.type == this.mod.ItemType<CrossDimensionalAggregatorItem>() ) {
-					Dust.NewDust( PlayerItemHelpers.TipOfHeldItem( this.player ), held_item.width, held_item.height, 15, 0, 0, 150, Main.DiscoColor, 1.2f );
+				if( heldItem.type == this.mod.ItemType<CrossDimensionalAggregatorItem>() ) {
+					Dust.NewDust( PlayerItemHelpers.TipOfHeldItem( this.player ), heldItem.width, heldItem.height, 15, 0, 0, 150, Main.DiscoColor, 1.2f );
 				}
 			}
 			

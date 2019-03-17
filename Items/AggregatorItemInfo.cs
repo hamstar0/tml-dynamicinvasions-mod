@@ -11,8 +11,27 @@ using Terraria.ModLoader.IO;
 
 namespace DynamicInvasions.Items {
 	class AggregatorItemInfo : GlobalItem {
+		public static List<KeyValuePair<int, ISet<int>>> GetNpcSetsOfBanners( IList<int> bannerItemTypes ) {
+			var list = new List<KeyValuePair<int, ISet<int>>>( bannerItemTypes.Count );
+
+			foreach( int bannerItemType in bannerItemTypes ) {
+				var npcs = NPCBannerHelpers.GetNpcTypesOfBannerItemType( bannerItemType );
+				var kv = new KeyValuePair<int, ISet<int>>( bannerItemType, npcs );
+				list.Add( kv );
+			}
+
+			return list;
+		}
+
+
+
+		////////////////
+
 		public override bool InstancePerEntity => true;
 
+
+
+		////////////////
 
 		public AggregatorItemInfo() : base() {
 			this.IsInitialized = false;
@@ -21,8 +40,8 @@ namespace DynamicInvasions.Items {
 			this.Uses = 0;
 		}
 
-		public override GlobalItem Clone( Item item, Item item_clone ) {
-			var clone = (AggregatorItemInfo)base.Clone( item, item_clone );
+		public override GlobalItem Clone( Item item, Item itemClone ) {
+			var clone = (AggregatorItemInfo)base.Clone( item, itemClone );
 			clone.IsInitialized = this.IsInitialized;
 			clone.MusicType = this.MusicType;
 			clone.BannerItemTypesToNpcTypes = this.BannerItemTypesToNpcTypes;
@@ -37,18 +56,18 @@ namespace DynamicInvasions.Items {
 		public override void Load( Item item, TagCompound tags ) {
 			if( item.type != this.mod.ItemType<CrossDimensionalAggregatorItem>() ) { return; }
 
-			bool is_init = tags.GetBool( "is_init" );
+			bool isInit = tags.GetBool( "is_init" );
 			int music = tags.GetInt( "music_type" );
 			int uses = tags.GetInt( "uses" );
-			string spawn_npc_enc = tags.GetString( "spawn_npcs" );
+			string spawnNpcEnc = tags.GetString( "spawn_npcs" );
 
 			IReadOnlyList<KeyValuePair<int, ISet<int>>> list = null;
-			if( spawn_npc_enc != "" || is_init ) {
-				var raw_list = JsonConfig<List<KeyValuePair<int, ISet<int>>>>.Deserialize( spawn_npc_enc );
-				list = raw_list.AsReadOnly();
+			if( spawnNpcEnc != "" || isInit ) {
+				var rawList = JsonConfig<List<KeyValuePair<int, ISet<int>>>>.Deserialize( spawnNpcEnc );
+				list = rawList.AsReadOnly();
 			}
 			
-			this.IsInitialized = is_init;
+			this.IsInitialized = isInit;
 			this.MusicType = music;
 			this.BannerItemTypesToNpcTypes = list;
 			this.Uses = uses;
@@ -57,34 +76,34 @@ namespace DynamicInvasions.Items {
 		public override TagCompound Save( Item item ) {
 			if( item.type != this.mod.ItemType<CrossDimensionalAggregatorItem>() ) { return new TagCompound(); }
 
-			string spawn_npc_enc = "";
+			string spawnNpcEnc = "";
 			if( this.BannerItemTypesToNpcTypes != null ) {
-				spawn_npc_enc = JsonConfig<IReadOnlyList<KeyValuePair<int, ISet<int>>>>.Serialize( this.BannerItemTypesToNpcTypes );
+				spawnNpcEnc = JsonConfig<IReadOnlyList<KeyValuePair<int, ISet<int>>>>.Serialize( this.BannerItemTypesToNpcTypes );
 			}
 
 			return new TagCompound {
 				{ "is_init", (bool)this.IsInitialized },
 				{ "music_type", (int)this.MusicType },
 				{ "uses", (int)this.Uses },
-				{ "spawn_npcs", (string)spawn_npc_enc }
+				{ "spawn_npcs", (string)spawnNpcEnc }
 			};
 		}
 
 		public override void NetReceive( Item item, BinaryReader reader ) {
 			if( item.type != this.mod.ItemType<CrossDimensionalAggregatorItem>() ) { return; }
 
-			bool is_init = reader.ReadBoolean();
+			bool isInit = reader.ReadBoolean();
 			int music = reader.ReadInt32();
 			int uses = reader.ReadInt32();
-			string spawn_npc_enc = reader.ReadString();
+			string spawnNpcEnc = reader.ReadString();
 
 			IReadOnlyList<KeyValuePair<int, ISet<int>>> list = null;
-			if( spawn_npc_enc != "" || is_init ) {
-				var raw_list = JsonConfig<List<KeyValuePair<int, ISet<int>>>>.Deserialize( spawn_npc_enc );
-				list = raw_list.AsReadOnly();
+			if( spawnNpcEnc != "" || isInit ) {
+				var rawList = JsonConfig<List<KeyValuePair<int, ISet<int>>>>.Deserialize( spawnNpcEnc );
+				list = rawList.AsReadOnly();
 			}
 
-			this.IsInitialized = is_init;
+			this.IsInitialized = isInit;
 			this.MusicType = music;
 			this.BannerItemTypesToNpcTypes = list;
 			this.Uses = uses;
@@ -93,32 +112,17 @@ namespace DynamicInvasions.Items {
 		public override void NetSend( Item item, BinaryWriter writer ) {
 			if( item.type != this.mod.ItemType<CrossDimensionalAggregatorItem>() ) { return; }
 
-			string spawn_npc_enc = "";
+			string spawnNpcEnc = "";
 			if( this.BannerItemTypesToNpcTypes != null ) {
-				spawn_npc_enc = JsonConfig<IReadOnlyList<KeyValuePair<int, ISet<int>>>>.Serialize( this.BannerItemTypesToNpcTypes );
+				spawnNpcEnc = JsonConfig<IReadOnlyList<KeyValuePair<int, ISet<int>>>>.Serialize( this.BannerItemTypesToNpcTypes );
 			}
 
 			writer.Write( (bool)this.IsInitialized );
 			writer.Write( (int)this.MusicType );
 			writer.Write( (int)this.Uses );
-			writer.Write( (string)spawn_npc_enc );
+			writer.Write( (string)spawnNpcEnc );
 		}
 
-
-
-		////////////////
-
-		public static List<KeyValuePair<int, ISet<int>>> GetNpcSetsOfBanners( IList<int> banner_item_types ) {
-			var list = new List<KeyValuePair<int, ISet<int>>>( banner_item_types.Count );
-
-			foreach( int banner_item_type in banner_item_types ) {
-				var npcs = NPCBannerHelpers.GetNpcTypesOfBannerItemType( banner_item_type );
-				var kv = new KeyValuePair<int, ISet<int>>( banner_item_type, npcs );
-				list.Add( kv );
-			}
-
-			return list;
-		}
 
 
 		////////////////
@@ -129,11 +133,14 @@ namespace DynamicInvasions.Items {
 		public int Uses { get; private set; }
 
 
-		public void Initialize( int music_box_item_type, IList<int> banner_item_types ) {
-			var list = AggregatorItemInfo.GetNpcSetsOfBanners( banner_item_types );
+
+		////////////////
+
+		public void Initialize( int musicBoxItemType, IList<int> bannerItemTypes ) {
+			var list = AggregatorItemInfo.GetNpcSetsOfBanners( bannerItemTypes );
 
 			this.IsInitialized = true;
-			this.MusicType = MusicBoxHelpers.GetMusicTypeOfVanillaMusicBox( music_box_item_type );
+			this.MusicType = MusicBoxHelpers.GetMusicTypeOfVanillaMusicBox( musicBoxItemType );
 			this.BannerItemTypesToNpcTypes = new List<KeyValuePair<int, ISet<int>>>( list ).AsReadOnly();
 		}
 
@@ -146,10 +153,10 @@ namespace DynamicInvasions.Items {
 			int i = 0;
 
 			foreach( var kv in this.BannerItemTypesToNpcTypes ) {
-				int npc_type = kv.Value.First();
-				if( npc_type != 0 ) {
+				int npcType = kv.Value.First();
+				if( npcType != 0 ) {
 					NPC npc = new NPC();
-					npc.SetDefaults( npc_type );
+					npc.SetDefaults( npcType );
 					names[i] = npc.TypeName;
 				} else {
 					names[i] = "-";

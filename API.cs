@@ -8,9 +8,9 @@ namespace DynamicInvasions {
 		}
 
 
-		public static void StartInvasion( int music_type, IReadOnlyList<KeyValuePair<int, ISet<int>>> spawn_info ) {
+		public static void StartInvasion( int musicType, IReadOnlyList<KeyValuePair<int, ISet<int>>> spawnInfo ) {
 			var wrld = DynamicInvasionsMod.Instance.GetModWorld<DynamicInvasionsWorld>();
-			wrld.Logic.StartInvasion( DynamicInvasionsMod.Instance, music_type, spawn_info );
+			wrld.Logic.StartInvasion( DynamicInvasionsMod.Instance, musicType, spawnInfo );
 		}
 	}
 }

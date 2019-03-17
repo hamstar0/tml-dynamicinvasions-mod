@@ -9,9 +9,12 @@ namespace DynamicInvasions {
 		public InvasionLogic Logic { get; private set; }
 
 
+
+		////////////////
+
 		public override void Initialize() {
 			var mymod = (DynamicInvasionsMod)this.mod;
-			this.Logic = new InvasionLogic( mymod );
+			this.Logic = new InvasionLogic();
 		}
 
 

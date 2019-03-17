@@ -149,7 +149,7 @@ namespace DynamicInvasions.Items {
 				return false;
 			}
 			
-			return myworld.Logic.CanStartInvasion( mymod );
+			return myworld.Logic.CanStartInvasion();
 		}
 
 		private void ActivateInvasion( Item fuelItem ) {
@@ -168,7 +168,7 @@ namespace DynamicInvasions.Items {
 			if( Main.netMode == 0 ) {
 				myworld.Logic.StartInvasion( mymod, itemInfo.MusicType, itemInfo.BannerItemTypesToNpcTypes );
 			} else if( Main.netMode == 1 ) {
-				ClientPacketHandlers.SendInvasionRequestFromClient( mymod, itemInfo.MusicType, itemInfo.BannerItemTypesToNpcTypes );
+				ClientPacketHandlers.SendInvasionRequestFromClient( itemInfo.MusicType, itemInfo.BannerItemTypesToNpcTypes );
 			}
 		}
 	}

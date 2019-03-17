@@ -3,7 +3,6 @@
 
 namespace DynamicInvasions {
 	public class DynamicInvasionsConfigData {
-		public readonly static Version ConfigVersion = new Version( 0, 8, 1 );
 		public readonly static string ConfigFileName = "Dynamic Invasions Config.json";
 
 
@@ -44,16 +43,16 @@ namespace DynamicInvasions {
 		////////////////
 
 		public bool UpdateToLatestVersion() {
-			var new_config = new DynamicInvasionsConfigData();
-			var vers_since = this.VersionSinceUpdate != "" ?
+			var newConfig = new DynamicInvasionsConfigData();
+			var versSince = this.VersionSinceUpdate != "" ?
 				new Version( this.VersionSinceUpdate ) :
 				new Version();
 
-			if( vers_since >= DynamicInvasionsConfigData.ConfigVersion ) {
+			if( versSince >= DynamicInvasionsMod.Instance.Version ) {
 				return false;
 			}
 			
-			this.VersionSinceUpdate = DynamicInvasionsConfigData.ConfigVersion.ToString();
+			this.VersionSinceUpdate = DynamicInvasionsMod.Instance.Version.ToString();
 
 			return true;
 		}
