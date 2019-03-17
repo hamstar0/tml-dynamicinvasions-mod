@@ -48,7 +48,7 @@ namespace DynamicInvasions.Items {
 				return false;
 			}
 
-			if( !modworld.Logic.CanStartInvasion( mymod ) ) {
+			if( !modworld.Logic.CanStartInvasion() ) {
 				Main.NewText( "Signal disrupted by mass of surface activity.", Main.errorColor );
 				return false;
 			}
@@ -82,8 +82,12 @@ namespace DynamicInvasions.Items {
 		
 		public override void AddRecipes() {
 			var mymod = (DynamicInvasionsMod)this.mod;
-			var myrecipe = new InterdimensionaAggregatorItemRecipe( mymod, mymod.ConfigJson.Data.BannersPerAggregator );
+			var myrecipe = new CrossDimensionaAggregatorItemRecipe( mymod, mymod.ConfigJson.Data.BannersPerAggregator );
 			myrecipe.AddRecipe();
+
+			var revertRecipe = new ModRecipe( mymod );
+			revertRecipe.AddIngredient( mymod.ItemType<CrossDimensionalAggregatorItem>(), 1 );
+			revertRecipe.SetResult( ItemID.MagicMirror, 1 );
 		}
 
 
@@ -170,85 +174,6 @@ namespace DynamicInvasions.Items {
 			} else if( Main.netMode == 1 ) {
 				ClientPacketHandlers.SendInvasionRequestFromClient( itemInfo.MusicType, itemInfo.BannerItemTypesToNpcTypes );
 			}
-		}
-	}
-
-
-
-
-	class InterdimensionaAggregatorItemRecipe : ModRecipe {
-		public int BannerCount { get; private set; }
-
-		private IList<int> BannerItemTypes = new List<int>();
-		private int MusicBoxItemType = -1;
-
-
-		public InterdimensionaAggregatorItemRecipe( DynamicInvasionsMod mymod, int bannerCount ) : base( mymod ) {
-			this.BannerCount = bannerCount;
-
-			this.AddTile( TileID.TinkerersWorkbench );
-
-			if( !mymod.Config.DebugModeCheat && mymod.Config.MirrorsPerAggregator > 0 ) {
-				this.AddRecipeGroup( "HamstarHelpers:MagicMirrors", mymod.Config.MirrorsPerAggregator );
-				//this.AddIngredient( ItemID.DarkShard, 1 );  //ItemID.Obsidian
-				//this.AddIngredient( ItemID.LightShard, 1 ); //ItemID.Cloud
-			}
-
-			this.AddRecipeGroup( "HamstarHelpers:RecordedMusicBoxes", 1 );
-			this.AddRecipeGroup( "HamstarHelpers:NpcBanners", bannerCount );
-			this.SetResult( mymod.ItemType<CrossDimensionalAggregatorItem>() );
-		}
-
-		public override int ConsumeItem( int itemType, int numRequired ) {
-			var mymod = (DynamicInvasionsMod)this.mod;
-			var musicItemTypes = MusicBoxHelpers.GetVanillaMusicBoxItemIds();
-			var bannerItemTypes = NPCBannerHelpers.GetBannerItemTypes();
-			Item[] inv = Main.LocalPlayer.inventory;
-			
-			if( bannerItemTypes.Contains(itemType) ) {
-				ISet<int> bannerItems = ItemFinderHelpers.FindIndexOfEach( inv, bannerItemTypes );
-
-				this.BannerItemTypes = new List<int>();
-				
-				foreach( int i in bannerItems ) {
-					Item bannerItem = inv[i];
-
-					for( int j=0; j<bannerItem.stack; j++ ) {
-						this.BannerItemTypes.Add( bannerItem.type );
-						if( this.BannerItemTypes.Count >= numRequired ) { break; }
-					}
-					if( this.BannerItemTypes.Count >= numRequired ) { break; }
-				}
-			} else if( musicItemTypes.Contains( itemType ) ) {
-				int idx = ItemFinderHelpers.FindIndexOfFirstOfItemInCollection( inv, musicItemTypes );
-				if( idx >= 0 ) {
-					this.MusicBoxItemType = inv[idx].type;
-				}
-			}
-
-			if( mymod.Config.DebugModeInfo ) {
-				Item item = new Item();
-				item.SetDefaults( itemType );
-				LogHelpers.Log( "consumed "+numRequired+" of "+itemType+" ("+item.Name+")" );
-			}
-
-			return numRequired;
-		}
-
-		public override void OnCraft( Item item ) {
-			if( this.MusicBoxItemType == -1 ) { throw new Exception( "No music box given for custom invasion summon item." ); }
-			if( this.BannerItemTypes.Count == 0 ) { throw new Exception( "No banners given for custom invasion summon item." ); }
-
-			var itemInfo = item.GetGlobalItem<AggregatorItemInfo>();
-			
-			itemInfo.Initialize( this.MusicBoxItemType, this.BannerItemTypes );
-		}
-
-		public override bool RecipeAvailable() {
-			var mymod = (DynamicInvasionsMod)this.mod;
-			if( !mymod.ConfigJson.Data.Enabled ) { return false; }
-			
-			return mymod.ConfigJson.Data.CraftableAggregators;
 		}
 	}
 }

@@ -12,6 +12,10 @@ namespace DynamicInvasions.Invasion {
 	partial class InvasionLogic {
 		public static Texture2D ProgressBarTexture { get; private set; }
 
+
+
+		////////////////
+
 		internal static void ModLoad() {
 			var mymod = DynamicInvasionsMod.Instance;
 
@@ -159,9 +163,11 @@ namespace DynamicInvasions.Invasion {
 		////////////////
 
 		public void EditSpawnPool( IDictionary<int, float> pool, NPCSpawnInfo spawnInfo ) {
+			var mymod = DynamicInvasionsMod.Instance;
+
 			foreach( int npcType in this.Data.SpawnNpcTypeList ) {
-				if( !pool.ContainsKey(npcType) ) { pool[npcType] = 1000f; }
-				else { pool[npcType] += 1000f; }
+				if( !pool.ContainsKey(npcType) ) { pool[npcType] = mymod.Config.InvasionSpawnRatePerType; }
+				else { pool[npcType] += mymod.Config.InvasionSpawnRatePerType; }
 			}
 		}
 	}

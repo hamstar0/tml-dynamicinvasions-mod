@@ -1,6 +1,7 @@
 ﻿using DynamicInvasions.Items;
 using DynamicInvasions.NetProtocol;
 using HamstarHelpers.Helpers.PlayerHelpers;
+using HamstarHelpers.Services.Messages;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -39,6 +40,7 @@ namespace DynamicInvasions {
 				if( !mymod.ConfigJson.LoadFile() ) {
 					mymod.ConfigJson.SaveFile();
 				}
+				this.FinishModSettingsSync();
 			}
 
 			if( Main.netMode == 1 ) {   // Client
@@ -47,6 +49,21 @@ namespace DynamicInvasions {
 			}
 
 			this.HasEnteredWorld = true;
+		}
+
+		////
+
+		internal void FinishModSettingsSync() {
+			var mymod = (DynamicInvasionsMod)this.mod;
+
+			string msg = "Want to summon custom invasions? Craft a Cross Dimensional Aggregator item at a Tinkerer's Workship with:";
+			if( mymod.Config.MirrorsPerAggregator > 0 ) {
+				msg += "\n" + mymod.Config.MirrorsPerAggregator + "x Magic/Ice Mirror";
+			}
+			msg += "\n" + mymod.Config.BannersPerAggregator + "x monster banners (any)";
+			msg += "\n1x Music Box (recorded)";
+
+			InboxMessages.SetMessage( "DynamicInvasionsRecipe", msg, false );
 		}
 
 

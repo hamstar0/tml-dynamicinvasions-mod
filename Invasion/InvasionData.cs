@@ -47,8 +47,8 @@ namespace DynamicInvasions.Invasion {
 		}
 
 
-		public void Initialize( bool isInvading, int size, int startSize, int enrouteTime, int warnTime, int introTime, int musicType, string spawn_npcs_enc ) {
-			var spawnNpcs = JsonConfig<IList<int>>.Deserialize( spawn_npcs_enc );
+		public void Initialize( bool isInvading, int size, int startSize, int enrouteTime, int warnTime, int introTime, int musicType, string spawnNpcsEnc ) {
+			var spawnNpcs = JsonConfig<IList<int>>.Deserialize( spawnNpcsEnc );
 			this.Initialize( isInvading, size, startSize, enrouteTime, warnTime, introTime, musicType, spawnNpcs );
 		}
 

@@ -1,5 +1,6 @@
 ﻿using HamstarHelpers.Components.Config;
 using HamstarHelpers.Helpers.DebugHelpers;
+using HamstarHelpers.Helpers.TmlHelpers;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
@@ -87,9 +88,12 @@ namespace DynamicInvasions.NetProtocol {
 			if( Main.netMode != 1 ) { return; }
 
 			var mymod = DynamicInvasionsMod.Instance;
+			var myplayer = (DynamicInvasionsPlayer)TmlHelpers.SafelyGetModPlayer( Main.LocalPlayer, mymod, "DynamicInvasionsPlayer" );
 			bool success;
 			
 			mymod.ConfigJson.DeserializeMe( reader.ReadString(), out success );
+
+			myplayer.FinishModSettingsSync();
 		}
 
 		private static void ReceiveInvasionOnClient( BinaryReader reader ) {

@@ -49,6 +49,7 @@ namespace DynamicInvasions.Items {
 			return clone;
 		}
 
+
 		public override bool NeedsSaving( Item item ) {
 			return this.IsInitialized && item.type == this.mod.ItemType<CrossDimensionalAggregatorItem>();
 		}
@@ -73,6 +74,7 @@ namespace DynamicInvasions.Items {
 			this.Uses = uses;
 		}
 
+
 		public override TagCompound Save( Item item ) {
 			if( item.type != this.mod.ItemType<CrossDimensionalAggregatorItem>() ) { return new TagCompound(); }
 
@@ -88,6 +90,7 @@ namespace DynamicInvasions.Items {
 				{ "spawn_npcs", (string)spawnNpcEnc }
 			};
 		}
+
 
 		public override void NetReceive( Item item, BinaryReader reader ) {
 			if( item.type != this.mod.ItemType<CrossDimensionalAggregatorItem>() ) { return; }

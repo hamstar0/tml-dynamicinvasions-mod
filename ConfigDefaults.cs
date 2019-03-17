@@ -27,6 +27,7 @@ namespace DynamicInvasions {
 		public int InvasionAddedSizePerStrongPlayer = 40;
 		public int InvasionSpawnRate = 72;
 		public int InvasionSpawnMax = 16;
+		public float InvasionSpawnRatePerType = 1100f;
 
 		public float InvaderLootDropPercentChance = 0.25f;
 
