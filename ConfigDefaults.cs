@@ -18,6 +18,7 @@ namespace DynamicInvasions {
 		public bool DebugModeCheat = false;
 
 		public bool CraftableAggregators = true;
+		public int MirrorsPerAggregator = 1;
 		public int BannersPerAggregator = 5;
 		public float AggregatorFuelCostMultiplier = 1.5f;
 

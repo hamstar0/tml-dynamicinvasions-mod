@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DynamicInvasions</RootNamespace>
     <AssemblyName>DynamicInvasions</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -60,14 +60,15 @@
   <ItemGroup>
     <Compile Include="API.cs" />
     <Compile Include="ConfigDefaults.cs" />
+    <Compile Include="MyMod_Meta.cs" />
     <Compile Include="Invasion\AutomaticInvasions.cs" />
     <Compile Include="Invasion\InvasionLogic_Info.cs" />
     <Compile Include="Invasion\InvasionLogic.cs" />
-    <Compile Include="DynamicInvasionsMod.cs" />
+    <Compile Include="MyMod.cs" />
     <Compile Include="Invasion\InvasionData.cs" />
-    <Compile Include="DynamicInvasionsNpc.cs" />
-    <Compile Include="DynamicInvasionsPlayer.cs" />
-    <Compile Include="DynamicInvasionsWorld.cs" />
+    <Compile Include="MyNpc.cs" />
+    <Compile Include="MyPlayer.cs" />
+    <Compile Include="MyWorld.cs" />
     <Compile Include="Items\CrossDimensionalAggregatorItem.cs" />
     <Compile Include="Items\AggregatorItemInfo.cs" />
     <Compile Include="NetProtocol\ClientPacketHandlers.cs" />

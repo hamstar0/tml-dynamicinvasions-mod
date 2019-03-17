@@ -11,7 +11,7 @@ using Terraria.ModLoader.IO;
 
 namespace DynamicInvasions.Items {
 	class AggregatorItemInfo : GlobalItem {
-		public override bool InstancePerEntity { get { return true; } }
+		public override bool InstancePerEntity => true;
 
 
 		public AggregatorItemInfo() : base() {

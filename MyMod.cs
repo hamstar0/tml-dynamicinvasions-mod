@@ -11,7 +11,7 @@ using DynamicInvasions.Invasion;
 
 
 namespace DynamicInvasions {
-    class DynamicInvasionsMod : Mod {
+	partial class DynamicInvasionsMod : Mod {
 		public static DynamicInvasionsMod Instance { get; private set; }
 
 		public static string GithubUserName { get { return "hamstar0"; } }

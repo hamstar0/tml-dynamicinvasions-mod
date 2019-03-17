@@ -42,9 +42,9 @@ namespace DynamicInvasions.Items {
 			if( !mymod.ConfigJson.Data.Enabled ) { return false; }
 
 			var modworld = mymod.GetModWorld<DynamicInvasionsWorld>();
-			var item_info = this.item.GetGlobalItem<AggregatorItemInfo>();
+			var itemInfo = this.item.GetGlobalItem<AggregatorItemInfo>();
 
-			if( !item_info.IsInitialized ) {
+			if( !itemInfo.IsInitialized ) {
 				return false;
 			}
 
@@ -53,15 +53,15 @@ namespace DynamicInvasions.Items {
 				return false;
 			}
 
-			Item fuel_item = PlayerItemFinderHelpers.FindFirstOfItemFor( player, new HashSet<int> { ItemID.DD2ElderCrystal } );
-			int fuel_cost = this.GetFuelCost();
-			bool has_fuel = fuel_item != null && !fuel_item.IsAir && fuel_cost <= fuel_item.stack;
-			if( !has_fuel ) {
+			Item fuelItem = PlayerItemFinderHelpers.FindFirstOfItemFor( player, new HashSet<int> { ItemID.DD2ElderCrystal } );
+			int fuelCost = this.GetFuelCost();
+			bool hasFuel = fuelItem != null && !fuelItem.IsAir && fuelCost <= fuelItem.stack;
+			if( !hasFuel ) {
 				Main.NewText( "Not enough Eternia Crystals.", Main.errorColor );
 				return false;
 			}
 
-			return has_fuel;
+			return hasFuel;
 		}
 
 
@@ -69,10 +69,10 @@ namespace DynamicInvasions.Items {
 			if( player.itemAnimation > 0 && player.itemTime == 0 ) {
 				player.itemTime = this.item.useTime;
 
-				Item fuel_item;
+				Item fuelItem;
 
-				if( this.CanStartInvasion( player, out fuel_item ) ) {
-					this.ActivateInvasion( fuel_item );
+				if( this.CanStartInvasion( player, out fuelItem ) ) {
+					this.ActivateInvasion( fuelItem );
 				}
 			}
 
@@ -88,28 +88,28 @@ namespace DynamicInvasions.Items {
 
 
 		public override void ModifyTooltips( List<TooltipLine> tooltips ) {
-			var item_info = this.item.GetGlobalItem<AggregatorItemInfo>();
+			var itemInfo = this.item.GetGlobalItem<AggregatorItemInfo>();
 
-			if( !item_info.IsInitialized ) {
-				var no_tip = new TooltipLine( this.mod, "AggregatorNoLabel", "No invasion to summon; try crafting instead." );
-				no_tip.overrideColor = Color.Red;
+			if( !itemInfo.IsInitialized ) {
+				var noTip = new TooltipLine( this.mod, "AggregatorNoLabel", "No invasion to summon; try crafting instead." );
+				noTip.overrideColor = Color.Red;
 
-				tooltips.Add( no_tip );
+				tooltips.Add( noTip );
 				return;
 			}
 
-			int fuel_cost = this.GetFuelCost();
-			var use_tip = new TooltipLine( this.mod, "AggregatorUses", "Eternia Crystals needed: "+ fuel_cost );
-			tooltips.Add( use_tip );
+			int fuelCost = this.GetFuelCost();
+			var useTip = new TooltipLine( this.mod, "AggregatorUses", "Eternia Crystals needed: "+ fuelCost );
+			tooltips.Add( useTip );
 
 			tooltips.Add( new TooltipLine( this.mod, "AggregatorListLabel", "Creates an invasion of the following:" ) );
 			
-			string[] names = item_info.GetNpcNames();
+			string[] names = itemInfo.GetNpcNames();
 			for( int i=0; i<names.Length; i++ ) {
-				var npc_tip = new TooltipLine( this.mod, "AggregatorListItem_"+i, names[i] );
-				npc_tip.overrideColor = Color.Green;
+				var npcTip = new TooltipLine( this.mod, "AggregatorListItem_"+i, names[i] );
+				npcTip.overrideColor = Color.Green;
 
-				tooltips.Add( npc_tip );
+				tooltips.Add( npcTip );
 			}
 		}
 
@@ -129,46 +129,46 @@ namespace DynamicInvasions.Items {
 
 		////////////////
 
-		private bool CanStartInvasion( Player player, out Item fuel_item ) {
-			fuel_item = PlayerItemFinderHelpers.FindFirstOfItemFor( player, new HashSet<int> { ItemID.DD2ElderCrystal } );
-			if( fuel_item == null || fuel_item.IsAir ) {
+		private bool CanStartInvasion( Player player, out Item fuelItem ) {
+			fuelItem = PlayerItemFinderHelpers.FindFirstOfItemFor( player, new HashSet<int> { ItemID.DD2ElderCrystal } );
+			if( fuelItem == null || fuelItem.IsAir ) {
 				return false;
 			}
 
 			var mymod = (DynamicInvasionsMod)this.mod;
-			var modworld = mymod.GetModWorld<DynamicInvasionsWorld>();
-			var item_info = this.item.GetGlobalItem<AggregatorItemInfo>();
-			int fuel_cost = this.GetFuelCost();
+			var myworld = mymod.GetModWorld<DynamicInvasionsWorld>();
+			var itemInfo = this.item.GetGlobalItem<AggregatorItemInfo>();
+			int fuelCost = this.GetFuelCost();
 
-			if( !item_info.IsInitialized ) {
+			if( !itemInfo.IsInitialized ) {
 				return false;
 			}
 
 			// Not enough fuel?
-			if( fuel_cost > fuel_item.stack ) {
+			if( fuelCost > fuelItem.stack ) {
 				return false;
 			}
 			
-			return modworld.Logic.CanStartInvasion( mymod );
+			return myworld.Logic.CanStartInvasion( mymod );
 		}
 
-		private void ActivateInvasion( Item fuel_item ) {
+		private void ActivateInvasion( Item fuelItem ) {
 			var mymod = (DynamicInvasionsMod)this.mod;
-			var modworld = mymod.GetModWorld<DynamicInvasionsWorld>();
-			var item_info = this.item.GetGlobalItem<AggregatorItemInfo>();
-			int fuel_cost = this.GetFuelCost();
+			var myworld = mymod.GetModWorld<DynamicInvasionsWorld>();
+			var itemInfo = this.item.GetGlobalItem<AggregatorItemInfo>();
+			int fuelCost = this.GetFuelCost();
 
 			if( mymod.Config.DebugModeInfo ) {
 				Main.NewText( "Activating invasion..." );
 			}
 
-			ItemHelpers.ReduceStack( fuel_item, fuel_cost );
-			item_info.Use();
+			ItemHelpers.ReduceStack( fuelItem, fuelCost );
+			itemInfo.Use();
 
 			if( Main.netMode == 0 ) {
-				modworld.Logic.StartInvasion( mymod, item_info.MusicType, item_info.BannerItemTypesToNpcTypes );
+				myworld.Logic.StartInvasion( mymod, itemInfo.MusicType, itemInfo.BannerItemTypesToNpcTypes );
 			} else if( Main.netMode == 1 ) {
-				ClientPacketHandlers.SendInvasionRequestFromClient( mymod, item_info.MusicType, item_info.BannerItemTypesToNpcTypes );
+				ClientPacketHandlers.SendInvasionRequestFromClient( mymod, itemInfo.MusicType, itemInfo.BannerItemTypesToNpcTypes );
 			}
 		}
 	}
@@ -183,44 +183,44 @@ namespace DynamicInvasions.Items {
 		private int MusicBoxItemType = -1;
 
 
-		public InterdimensionaAggregatorItemRecipe( DynamicInvasionsMod mymod, int banner_count ) : base( mymod ) {
-			this.BannerCount = banner_count;
+		public InterdimensionaAggregatorItemRecipe( DynamicInvasionsMod mymod, int bannerCount ) : base( mymod ) {
+			this.BannerCount = bannerCount;
 
 			this.AddTile( TileID.TinkerersWorkbench );
 
-			if( !mymod.Config.DebugModeCheat ) {
-				this.AddRecipeGroup( "HamstarHelpers:MagicMirrors", 1 );
+			if( !mymod.Config.DebugModeCheat && mymod.Config.MirrorsPerAggregator > 0 ) {
+				this.AddRecipeGroup( "HamstarHelpers:MagicMirrors", mymod.Config.MirrorsPerAggregator );
 				//this.AddIngredient( ItemID.DarkShard, 1 );  //ItemID.Obsidian
 				//this.AddIngredient( ItemID.LightShard, 1 ); //ItemID.Cloud
 			}
 
 			this.AddRecipeGroup( "HamstarHelpers:RecordedMusicBoxes", 1 );
-			this.AddRecipeGroup( "HamstarHelpers:NpcBanners", banner_count );
+			this.AddRecipeGroup( "HamstarHelpers:NpcBanners", bannerCount );
 			this.SetResult( mymod.ItemType<CrossDimensionalAggregatorItem>() );
 		}
 
-		public override int ConsumeItem( int item_type, int num_required ) {
+		public override int ConsumeItem( int itemType, int numRequired ) {
 			var mymod = (DynamicInvasionsMod)this.mod;
-			var music_item_types = MusicBoxHelpers.GetVanillaMusicBoxItemIds();
-			var banner_item_types = NPCBannerHelpers.GetBannerItemTypes();
+			var musicItemTypes = MusicBoxHelpers.GetVanillaMusicBoxItemIds();
+			var bannerItemTypes = NPCBannerHelpers.GetBannerItemTypes();
 			Item[] inv = Main.LocalPlayer.inventory;
 			
-			if( banner_item_types.Contains(item_type) ) {
-				ISet<int> banner_items = ItemFinderHelpers.FindIndexOfEach( inv, banner_item_types );
+			if( bannerItemTypes.Contains(itemType) ) {
+				ISet<int> bannerItems = ItemFinderHelpers.FindIndexOfEach( inv, bannerItemTypes );
 
 				this.BannerItemTypes = new List<int>();
 				
-				foreach( int i in banner_items ) {
-					Item banner_item = inv[i];
+				foreach( int i in bannerItems ) {
+					Item bannerItem = inv[i];
 
-					for( int j=0; j<banner_item.stack; j++ ) {
-						this.BannerItemTypes.Add( banner_item.type );
-						if( this.BannerItemTypes.Count >= num_required ) { break; }
+					for( int j=0; j<bannerItem.stack; j++ ) {
+						this.BannerItemTypes.Add( bannerItem.type );
+						if( this.BannerItemTypes.Count >= numRequired ) { break; }
 					}
-					if( this.BannerItemTypes.Count >= num_required ) { break; }
+					if( this.BannerItemTypes.Count >= numRequired ) { break; }
 				}
-			} else if( music_item_types.Contains( item_type ) ) {
-				int idx = ItemFinderHelpers.FindIndexOfFirstOfItemInCollection( inv, music_item_types );
+			} else if( musicItemTypes.Contains( itemType ) ) {
+				int idx = ItemFinderHelpers.FindIndexOfFirstOfItemInCollection( inv, musicItemTypes );
 				if( idx >= 0 ) {
 					this.MusicBoxItemType = inv[idx].type;
 				}
@@ -228,20 +228,20 @@ namespace DynamicInvasions.Items {
 
 			if( mymod.Config.DebugModeInfo ) {
 				Item item = new Item();
-				item.SetDefaults( item_type );
-				LogHelpers.Log( "consumed "+num_required+" of "+item_type+" ("+item.Name+")" );
+				item.SetDefaults( itemType );
+				LogHelpers.Log( "consumed "+numRequired+" of "+itemType+" ("+item.Name+")" );
 			}
 
-			return num_required;
+			return numRequired;
 		}
 
 		public override void OnCraft( Item item ) {
 			if( this.MusicBoxItemType == -1 ) { throw new Exception( "No music box given for custom invasion summon item." ); }
 			if( this.BannerItemTypes.Count == 0 ) { throw new Exception( "No banners given for custom invasion summon item." ); }
 
-			var item_info = item.GetGlobalItem<AggregatorItemInfo>();
+			var itemInfo = item.GetGlobalItem<AggregatorItemInfo>();
 			
-			item_info.Initialize( this.MusicBoxItemType, this.BannerItemTypes );
+			itemInfo.Initialize( this.MusicBoxItemType, this.BannerItemTypes );
 		}
 
 		public override bool RecipeAvailable() {
