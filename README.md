@@ -1,8 +1,6 @@
 Implements dynamic mob invasions. Craftable a Cross-Dimensional Aggregator to summon your own invasions.
 - Recipe:
   - 1x Magic/Ice Mirror
-  - 1x Dark Shard
-  - 1x Light Shard
   - 5x Npc Banners (any); specifies each invader's type
   - 1x Music Box (recorded); specifies invasion's music
 - The Aggregator requires Eternia Crystals to summon
