@@ -31,6 +31,9 @@ namespace DynamicInvasions.Invasion {
 		//private AutomaticInvasions Auto = null;
 
 
+
+		////////////////
+
 		internal InvasionLogic() {
 			this.Data = new InvasionData();
 
@@ -38,7 +41,6 @@ namespace DynamicInvasions.Invasion {
 			//	this.Auto = new AutomaticInvasions();
 			//}
 		}
-
 
 		////////////////
 

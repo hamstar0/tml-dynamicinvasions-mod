@@ -11,6 +11,7 @@ using DynamicInvasions.Invasion;
 using HamstarHelpers.Helpers.TmlHelpers;
 using HamstarHelpers.Components.Errors;
 using HamstarHelpers.Helpers.TmlHelpers.ModHelpers;
+using HamstarHelpers.Services.Promises;
 
 
 namespace DynamicInvasions {
@@ -40,8 +41,15 @@ namespace DynamicInvasions {
 			if( depErr != null ) { throw new HamstarException( depErr ); }
 
 			this.LoadConfig();
-			
+
 			InvasionLogic.ModLoad();
+
+			Promises.AddPostWorldUnloadEachPromise( () => {
+				try {
+					var myworld = this.GetModWorld<DynamicInvasionsWorld>();
+					myworld.Uninitialize();
+				} catch { }
+			} );
 		}
 
 		private void LoadConfig() {

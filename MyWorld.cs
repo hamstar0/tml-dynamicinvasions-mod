@@ -17,6 +17,11 @@ namespace DynamicInvasions {
 			this.Logic = new InvasionLogic();
 		}
 
+		internal void Uninitialize() {
+			this.Logic = null;
+		}
+
+		////////////////
 
 		public override void Load( TagCompound tags ) {
 			var mymod = (DynamicInvasionsMod)this.mod;
@@ -40,6 +45,8 @@ namespace DynamicInvasions {
 			//this.Logic.GetNetReceiver()( reader );
 		//}
 
+			
+		////////////////
 
 		public override void PreUpdate() {
 			var mymod = (DynamicInvasionsMod)this.mod;
