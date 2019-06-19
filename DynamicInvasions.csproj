@@ -61,6 +61,7 @@
     <Compile Include="API.cs" />
     <Compile Include="ConfigDefaults.cs" />
     <Compile Include="Items\CrossDimensionaAggregatorItemRecipe.cs" />
+    <Compile Include="Items\CrossDimensionalAggregatorItem_Interact.cs" />
     <Compile Include="MyMod_Meta.cs" />
     <Compile Include="Invasion\AutomaticInvasions.cs" />
     <Compile Include="Invasion\InvasionLogic_Info.cs" />

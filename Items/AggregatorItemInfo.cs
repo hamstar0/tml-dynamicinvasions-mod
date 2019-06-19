@@ -25,6 +25,15 @@ namespace DynamicInvasions.Items {
 
 
 
+
+		////////////////
+
+		public bool IsInitialized { get; private set; }
+		public int MusicType { get; private set; }
+		public IReadOnlyList<KeyValuePair<int, ISet<int>>> BannerItemTypesToNpcTypes { get; private set; }
+		public int Uses { get; private set; }
+
+
 		////////////////
 
 		public override bool InstancePerEntity => true;
@@ -125,16 +134,6 @@ namespace DynamicInvasions.Items {
 			writer.Write( (int)this.Uses );
 			writer.Write( (string)spawnNpcEnc );
 		}
-
-
-
-		////////////////
-
-		public bool IsInitialized { get; private set; }
-		public int MusicType { get; private set; }
-		public IReadOnlyList<KeyValuePair<int, ISet<int>>> BannerItemTypesToNpcTypes { get; private set; }
-		public int Uses { get; private set; }
-
 
 
 		////////////////
