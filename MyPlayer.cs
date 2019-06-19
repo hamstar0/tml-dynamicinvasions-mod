@@ -75,7 +75,7 @@ namespace DynamicInvasions {
 
 			if( this.player.whoAmI == Main.myPlayer ) {
 				var modworld = this.mod.GetModWorld<DynamicInvasionsWorld>();
-				modworld.Logic.Update( mymod );
+				modworld.Logic.Update();
 			}
 		}
 

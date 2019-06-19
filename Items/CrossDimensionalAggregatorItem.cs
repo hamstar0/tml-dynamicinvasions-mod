@@ -1,4 +1,5 @@
 ﻿using HamstarHelpers.Helpers.DebugHelpers;
+using HamstarHelpers.Helpers.PlayerHelpers;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,14 @@ namespace DynamicInvasions.Items {
 	//InterdimensionalTranslocator
 	//EphemeralEffectuatorItem
 	partial class CrossDimensionalAggregatorItem : ModItem {
+		public static Item GetFuelItemFromInventory( Player player ) {
+			return PlayerItemFinderHelpers.FindFirstOfItemFor( player, new HashSet<int> { ItemID.DD2ElderCrystal } );
+		}
+
+
+
+		////////////////
+
 		public override void SetStaticDefaults() {
 			this.DisplayName.SetDefault( "Cross-Dimensional Aggregator" );
 			this.Tooltip.SetDefault( "Draws an invasion of known-creatures from across realms. Runs until out of juice."+'\n'+

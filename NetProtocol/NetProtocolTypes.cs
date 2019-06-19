@@ -4,7 +4,9 @@
 		ModSettings,
 		Invasion,
 		InvasionStatus,
+		EndInvasion,
 		RequestInvasion,
-		RequestInvasionStatus
+		RequestInvasionStatus,
+		RequestEndInvasion
 	}
 }

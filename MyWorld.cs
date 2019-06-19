@@ -53,7 +53,7 @@ namespace DynamicInvasions {
 			if( !mymod.ConfigJson.Data.Enabled ) { return; }
 
 			if( Main.netMode == 2 ) {	// Server
-				this.Logic.Update( mymod );
+				this.Logic.Update();
 			}
 		}
 	}

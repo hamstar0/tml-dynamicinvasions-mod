@@ -52,8 +52,13 @@ namespace DynamicInvasions.Invasion {
 
 		////////////////
 
+		public bool IsInvasionHappening() {
+			return this.Data.IsInvading;
+		}
+
+
 		public bool CanStartInvasion() {
-			if( !this.Data.IsInvading && Main.invasionDelay > 0 ) {
+			if( !this.IsInvasionHappening() && Main.invasionDelay > 0 ) {
 				Main.invasionDelay = 0;	// Failsafe?
 			}
 			
@@ -67,11 +72,13 @@ namespace DynamicInvasions.Invasion {
 		}
 
 		public bool HasInvasionFinishedArriving() {
-			return this.Data.IsInvading && this.Data.InvasionEnrouteDuration == 0;
+			return this.IsInvasionHappening() && this.Data.InvasionEnrouteDuration == 0;
 		}
 
 
-		public void StartInvasion( DynamicInvasionsMod mymod, int musicType, IReadOnlyList<KeyValuePair<int, ISet<int>>> spawnInfo ) {
+		public void StartInvasion( int musicType, IReadOnlyList<KeyValuePair<int, ISet<int>>> spawnInfo ) {
+			var mymod = DynamicInvasionsMod.Instance;
+
 			Main.invasionDelay = 2; // Lightweight invasion
 			var spawnNpcs = spawnInfo.SelectMany( id => id.Value ).ToList();
 			int size = 0;
@@ -123,7 +130,9 @@ namespace DynamicInvasions.Invasion {
 
 		////////////////
 
-		public void Update( DynamicInvasionsMod mymod ) {
+		public void Update() {
+			var mymod = DynamicInvasionsMod.Instance;
+
 			if( mymod.Config.DebugModeInfo ) {
 				DebugHelpers.Print( "DynamicInvasionInfo", "IsInvading: "+this.Data.IsInvading+
 					", : enroute: "+this.Data.InvasionEnrouteDuration+
@@ -133,7 +142,7 @@ namespace DynamicInvasions.Invasion {
 				);
 			}
 
-			if( this.Data.IsInvading ) {
+			if( this.IsInvasionHappening() ) {
 				Main.invasionDelay = 2; // Lightweight invasion
 
 				if( this.Data.InvasionEnrouteDuration > 0 ) {

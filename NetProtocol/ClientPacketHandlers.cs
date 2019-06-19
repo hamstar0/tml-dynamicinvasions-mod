@@ -26,6 +26,10 @@ namespace DynamicInvasions.NetProtocol {
 				if( mymod.Config.DebugModeInfo ) { LogHelpers.Log( "ClientPacketHandlers.InvasionStatus" ); }
 				ClientPacketHandlers.ReceiveInvasionStatusOnClient( reader );
 				break;
+			case NetProtocolTypes.EndInvasion:
+				if( mymod.Config.DebugModeInfo ) { LogHelpers.Log( "ClientPacketHandlers.EndInvasion" ); }
+				ClientPacketHandlers.ReceiveEndInvasionOnClient( reader );
+				break;
 			default:
 				if( mymod.Config.DebugModeInfo ) { LogHelpers.Log( "ClientPacketHandlers ...? " + protocol ); }
 				break;
@@ -77,6 +81,18 @@ namespace DynamicInvasions.NetProtocol {
 			packet.Send();
 		}
 
+		public static void SendEndInvasionRequestFromClient() {
+			// Clients only
+			if( Main.netMode != 1 ) { return; }
+
+			var mymod = DynamicInvasionsMod.Instance;
+			ModPacket packet = mymod.GetPacket();
+
+			packet.Write( (byte)NetProtocolTypes.RequestEndInvasion );
+
+			packet.Send();
+		}
+
 
 
 		////////////////
@@ -106,7 +122,7 @@ namespace DynamicInvasions.NetProtocol {
 			var spawnInfo = JsonConfig<List<KeyValuePair<int, ISet<int>>>>.Deserialize( spawnInfoEnc );
 
 			var modworld = mymod.GetModWorld<DynamicInvasionsWorld>();
-			modworld.Logic.StartInvasion( mymod, musicType, spawnInfo.AsReadOnly() );
+			modworld.Logic.StartInvasion( musicType, spawnInfo.AsReadOnly() );
 		}
 
 		private static void ReceiveInvasionStatusOnClient( BinaryReader reader ) {
@@ -117,6 +133,16 @@ namespace DynamicInvasions.NetProtocol {
 			var modworld = mymod.GetModWorld<DynamicInvasionsWorld>();
 
 			modworld.Logic.MyNetReceive( reader );
+		}
+		
+		private static void ReceiveEndInvasionOnClient( BinaryReader reader ) {
+			// Clients only
+			if( Main.netMode != 1 ) { return; }
+
+			var mymod = DynamicInvasionsMod.Instance;
+			var modworld = mymod.GetModWorld<DynamicInvasionsWorld>();
+
+			modworld.Logic.EndInvasion();
 		}
 	}
 }

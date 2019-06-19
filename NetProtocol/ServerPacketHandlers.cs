@@ -25,6 +25,10 @@ namespace DynamicInvasions.NetProtocol {
 				if( mymod.Config.DebugModeInfo ) { LogHelpers.Log( "ServerPacketHandlers.RequestInvasionStatus" ); }
 				ServerPacketHandlers.ReceiveInvasionStatusRequestOnServer( reader, playerWho );
 				break;
+			case NetProtocolTypes.RequestEndInvasion:
+				if( mymod.Config.DebugModeInfo ) { LogHelpers.Log( "ServerPacketHandlers.RequestEndInvasion" ); }
+				ServerPacketHandlers.ReceiveEndInvasionRequestOnServer( reader, playerWho );
+				break;
 			default:
 				if( mymod.Config.DebugModeInfo ) { LogHelpers.Log( "ServerPacketHandlers ...? " + protocol ); }
 				break;
@@ -50,7 +54,7 @@ namespace DynamicInvasions.NetProtocol {
 			packet.Send( (int)player.whoAmI );
 		}
 
-		public static void SendInvasionFromServer( Player player, int musicType, string spawnInfoCnc ) {
+		public static void SendInvasionFromServer( Player player, int musicType, string spawnInfoEnc ) {
 			// Server only
 			if( Main.netMode != 2 ) { return; }
 
@@ -59,7 +63,7 @@ namespace DynamicInvasions.NetProtocol {
 
 			packet.Write( (byte)NetProtocolTypes.Invasion );
 			packet.Write( (int)musicType );
-			packet.Write( (string)spawnInfoCnc );
+			packet.Write( (string)spawnInfoEnc );
 
 			packet.Send( (int)player.whoAmI );
 		}
@@ -77,9 +81,22 @@ namespace DynamicInvasions.NetProtocol {
 
 			packet.Send( (int)player.whoAmI );
 		}
-
-
 		
+		public static void SendEndInvasionFromServer( Player player ) {
+			// Server only
+			if( Main.netMode != 2 ) { return; }
+
+			var mymod = DynamicInvasionsMod.Instance;
+			ModPacket packet = mymod.GetPacket();
+			var modworld = mymod.GetModWorld<DynamicInvasionsWorld>();
+
+			packet.Write( (byte)NetProtocolTypes.EndInvasion );
+
+			packet.Send( (int)player.whoAmI );
+		}
+
+
+
 		////////////////
 		// Server Receivers
 		////////////////
@@ -102,8 +119,8 @@ namespace DynamicInvasions.NetProtocol {
 			string spawnInfoEnc = reader.ReadString();
 			var spawnInfo = JsonConfig<List<KeyValuePair<int, ISet<int>>>>.Deserialize( spawnInfoEnc );
 
-			var modworld = mymod.GetModWorld<DynamicInvasionsWorld>();
-			modworld.Logic.StartInvasion( mymod, musicType, spawnInfo.AsReadOnly() );
+			var myworld = mymod.GetModWorld<DynamicInvasionsWorld>();
+			myworld.Logic.StartInvasion( musicType, spawnInfo.AsReadOnly() );
 
 			for( int i = 0; i < Main.player.Length; i++ ) {
 				Player player = Main.player[i];
@@ -117,9 +134,24 @@ namespace DynamicInvasions.NetProtocol {
 			// Server only
 			if( Main.netMode != 2 ) { return; }
 
-			var mymod = DynamicInvasionsMod.Instance;
-
 			ServerPacketHandlers.SendInvasionStatusFromServer( Main.player[playerWho] );
+		}
+		
+		private static void ReceiveEndInvasionRequestOnServer( BinaryReader reader, int playerWho ) {
+			// Server only
+			if( Main.netMode != 2 ) { return; }
+
+			var mymod = DynamicInvasionsMod.Instance;
+			var myworld = mymod.GetModWorld<DynamicInvasionsWorld>();
+
+			myworld.Logic.EndInvasion();
+
+			for( int i = 0; i < Main.player.Length; i++ ) {
+				Player player = Main.player[i];
+				if( player == null || !player.active ) { continue; }
+
+				ServerPacketHandlers.SendEndInvasionFromServer( player );
+			}
 		}
 	}
 }

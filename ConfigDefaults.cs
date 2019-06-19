@@ -39,6 +39,9 @@ namespace DynamicInvasions {
 		public bool AutoInvasions = true;
 		public int AutoInvasionAverageDays = 9;
 
+		public bool CanAbortInvasions = true;
+		public int InvasionAbortFuelCost = 3;
+
 
 
 		////

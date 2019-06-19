@@ -1,11 +1,9 @@
 ﻿using DynamicInvasions.NetProtocol;
 using HamstarHelpers.Helpers.DebugHelpers;
 using HamstarHelpers.Helpers.ItemHelpers;
-using HamstarHelpers.Helpers.PlayerHelpers;
+using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
 using Terraria;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 
@@ -27,7 +25,7 @@ namespace DynamicInvasions.Items {
 				return false;
 			}
 
-			Item fuelItem = PlayerItemFinderHelpers.FindFirstOfItemFor( player, new HashSet<int> { ItemID.DD2ElderCrystal } );
+			Item fuelItem = CrossDimensionalAggregatorItem.GetFuelItemFromInventory( player );
 			int fuelCost = this.GetFuelCost();
 			bool hasFuel = fuelItem != null && !fuelItem.IsAir && fuelCost <= fuelItem.stack;
 			if( !hasFuel ) {
@@ -56,22 +54,43 @@ namespace DynamicInvasions.Items {
 		////////////////
 
 		public override bool ConsumeItem( Player player ) {
-			return base.ConsumeItem( player );
+			return false;
 		}
 
 		public override bool CanRightClick() {
-			return base.CanRightClick();
+			return true;
 		}
 
 		public override void RightClick( Player player ) {
-			base.RightClick( player );
+			var mymod = (DynamicInvasionsMod)this.mod;
+			var myworld = mymod.GetModWorld<DynamicInvasionsWorld>();
+
+			if( mymod.Config.CanAbortInvasions && myworld.Logic.IsInvasionHappening() ) {
+				Item fuelItem = CrossDimensionalAggregatorItem.GetFuelItemFromInventory( player );
+				
+				if( fuelItem != null && !fuelItem.IsAir && fuelItem.stack >= mymod.Config.InvasionAbortFuelCost ) {
+					ItemHelpers.ReduceStack( fuelItem, mymod.Config.InvasionAbortFuelCost );
+
+					Main.NewText( "Ending invasion..." );
+
+					if( Main.netMode == 0 ) {
+						myworld.Logic.EndInvasion();
+					} else if( Main.netMode == 1 ) {
+						ClientPacketHandlers.SendEndInvasionRequestFromClient();
+					}
+				} else {
+					Main.NewText( "You need "+mymod.Config.InvasionAbortFuelCost+" Eternia Crystals to abort an invasion.", Color.Yellow );
+				}
+			} else {
+				Main.NewText( "No custom invasion in progress.", Color.Yellow );
+			}
 		}
 
 
 		////////////////
 
 		private bool CanStartInvasion( Player player, out Item fuelItem ) {
-			fuelItem = PlayerItemFinderHelpers.FindFirstOfItemFor( player, new HashSet<int> { ItemID.DD2ElderCrystal } );
+			fuelItem = CrossDimensionalAggregatorItem.GetFuelItemFromInventory( player );
 			if( fuelItem == null || fuelItem.IsAir ) {
 				return false;
 			}
@@ -107,7 +126,7 @@ namespace DynamicInvasions.Items {
 			itemInfo.Use();
 
 			if( Main.netMode == 0 ) {
-				myworld.Logic.StartInvasion( mymod, itemInfo.MusicType, itemInfo.BannerItemTypesToNpcTypes );
+				myworld.Logic.StartInvasion( itemInfo.MusicType, itemInfo.BannerItemTypesToNpcTypes );
 			} else if( Main.netMode == 1 ) {
 				ClientPacketHandlers.SendInvasionRequestFromClient( itemInfo.MusicType, itemInfo.BannerItemTypesToNpcTypes );
 			}
