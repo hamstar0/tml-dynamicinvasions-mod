@@ -45,6 +45,7 @@ namespace DynamicInvasions.Items {
 		////////////////
 
 		public override void ModifyTooltips( List<TooltipLine> tooltips ) {
+			var mymod = (DynamicInvasionsMod)this.mod;
 			var itemInfo = this.item.GetGlobalItem<AggregatorItemInfo>();
 
 			if( !itemInfo.IsInitialized ) {
@@ -53,6 +54,15 @@ namespace DynamicInvasions.Items {
 
 				tooltips.Add( noTip );
 				return;
+			}
+
+			if( mymod.Config.CanAbortInvasions ) {
+				string abortTipStr = mymod.Config.InvasionAbortFuelCost >= 1
+					? "Right-click to abort current invasion (costs "+mymod.Config.InvasionAbortFuelCost+" Eternia Crystals)."
+					: "Right-click to abort current invasion.";
+				var abortTip = new TooltipLine( this.mod, "AggregatorAbort", abortTipStr );
+
+				tooltips.Add( abortTip );
 			}
 
 			int fuelCost = this.GetFuelCost();
