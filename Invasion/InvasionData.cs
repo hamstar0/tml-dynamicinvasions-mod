@@ -1,5 +1,5 @@
-﻿using HamstarHelpers.Components.Config;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using Terraria.ModLoader.IO;
@@ -48,7 +48,7 @@ namespace DynamicInvasions.Invasion {
 
 
 		public void Initialize( bool isInvading, int size, int startSize, int enrouteTime, int warnTime, int introTime, int musicType, string spawnNpcsEnc ) {
-			var spawnNpcs = JsonConfig<IList<int>>.Deserialize( spawnNpcsEnc );
+			var spawnNpcs = JsonConvert.DeserializeObject<IList<int>>( spawnNpcsEnc );
 			this.Initialize( isInvading, size, startSize, enrouteTime, warnTime, introTime, musicType, spawnNpcs );
 		}
 
@@ -89,7 +89,7 @@ namespace DynamicInvasions.Invasion {
 				{ "warn_time", this.InvasionEnrouteWarningDuration },
 				{ "intro_time", this.InvasionProgressIntroAnimation },
 				{ "music_type", this.MusicType },
-				{ "spawn_npcs", JsonConfig<IList<int>>.Serialize( this.SpawnNpcTypeList ) }
+				{ "spawn_npcs", JsonConvert.SerializeObject( this.SpawnNpcTypeList ) }
 			};
 		}
 
@@ -101,7 +101,7 @@ namespace DynamicInvasions.Invasion {
 			writer.Write( (int)this.InvasionEnrouteWarningDuration );
 			writer.Write( (int)this.InvasionProgressIntroAnimation );
 			writer.Write( (int)this.MusicType );
-			writer.Write( (string)JsonConfig<IList<int>>.Serialize( this.SpawnNpcTypeList ) );
+			writer.Write( (string)JsonConvert.SerializeObject( this.SpawnNpcTypeList ) );
 		}
 
 		public void MyNetReceive( BinaryReader reader ) {

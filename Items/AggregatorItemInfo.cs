@@ -1,6 +1,6 @@
-﻿using HamstarHelpers.Components.Config;
-using HamstarHelpers.Helpers.ItemHelpers;
-using HamstarHelpers.Helpers.NPCHelpers;
+﻿using HamstarHelpers.Helpers.Items;
+using HamstarHelpers.Helpers.NPCs;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -73,7 +73,7 @@ namespace DynamicInvasions.Items {
 
 			IReadOnlyList<KeyValuePair<int, ISet<int>>> list = null;
 			if( spawnNpcEnc != "" || isInit ) {
-				var rawList = JsonConfig<List<KeyValuePair<int, ISet<int>>>>.Deserialize( spawnNpcEnc );
+				var rawList = JsonConvert.DeserializeObject<List<KeyValuePair<int, ISet<int>>>>( spawnNpcEnc );
 				list = rawList.AsReadOnly();
 			}
 			
@@ -89,7 +89,7 @@ namespace DynamicInvasions.Items {
 
 			string spawnNpcEnc = "";
 			if( this.BannerItemTypesToNpcTypes != null ) {
-				spawnNpcEnc = JsonConfig<IReadOnlyList<KeyValuePair<int, ISet<int>>>>.Serialize( this.BannerItemTypesToNpcTypes );
+				spawnNpcEnc = JsonConvert.SerializeObject( this.BannerItemTypesToNpcTypes );
 			}
 
 			return new TagCompound {
@@ -111,7 +111,7 @@ namespace DynamicInvasions.Items {
 
 			IReadOnlyList<KeyValuePair<int, ISet<int>>> list = null;
 			if( spawnNpcEnc != "" || isInit ) {
-				var rawList = JsonConfig<List<KeyValuePair<int, ISet<int>>>>.Deserialize( spawnNpcEnc );
+				var rawList = JsonConvert.DeserializeObject<List<KeyValuePair<int, ISet<int>>>>( spawnNpcEnc );
 				list = rawList.AsReadOnly();
 			}
 
@@ -126,7 +126,7 @@ namespace DynamicInvasions.Items {
 
 			string spawnNpcEnc = "";
 			if( this.BannerItemTypesToNpcTypes != null ) {
-				spawnNpcEnc = JsonConfig<IReadOnlyList<KeyValuePair<int, ISet<int>>>>.Serialize( this.BannerItemTypesToNpcTypes );
+				spawnNpcEnc = JsonConvert.SerializeObject( this.BannerItemTypesToNpcTypes );
 			}
 
 			writer.Write( (bool)this.IsInitialized );

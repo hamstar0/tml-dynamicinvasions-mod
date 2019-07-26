@@ -1,4 +1,4 @@
-﻿using HamstarHelpers.Helpers.DebugHelpers;
+﻿using HamstarHelpers.Helpers.Debug;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.IO;
@@ -101,12 +101,12 @@ namespace DynamicInvasions.Invasion {
 			if( mymod.Config.DebugModeCheat ) {
 				size = 30;
 			} else {
-				int baseAmt = mymod.ConfigJson.Data.InvasionMinSize;
-				int perPlayerAmt = mymod.ConfigJson.Data.InvasionAddedSizePerStrongPlayer;
+				int baseAmt = mymod.Config.InvasionMinSize;
+				int perPlayerAmt = mymod.Config.InvasionAddedSizePerStrongPlayer;
 				size = baseAmt + (perPlayerAmt * invadablePlayerCount);
 			}
 
-			this.Data.Initialize( true, size, size, 60 * mymod.ConfigJson.Data.InvasionArrivalTimeInSeconds, 0, 0, musicType, spawnNpcs );
+			this.Data.Initialize( true, size, size, 60 * mymod.Config.InvasionArrivalTimeInSeconds, 0, 0, musicType, spawnNpcs );
 		}
 
 		

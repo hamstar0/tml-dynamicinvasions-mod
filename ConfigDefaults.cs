@@ -1,76 +1,64 @@
 ﻿using System;
+using System.ComponentModel;
+using Terraria.ModLoader.Config;
 
 
 namespace DynamicInvasions {
-	public class DynamicInvasionsConfigData {
-		public readonly static string ConfigFileName = "Dynamic Invasions Config.json";
+	public class DynamicInvasionsConfigData : ModConfig {
+		public override ConfigScope Mode => ConfigScope.ServerSide;
 
 
-		////////////////
+		////
 
-		public string VersionSinceUpdate = "";
-
+		[DefaultValue( true )]
 		public bool Enabled = true;
 
 		public bool DebugModeInfo = false;
 		public bool DebugModeReset = false;
 		public bool DebugModeCheat = false;
 
+		[DefaultValue( true )]
 		public bool CraftableAggregators = true;
+		[DefaultValue( 1 )]
 		public int MirrorsPerAggregator = 1;
+		[DefaultValue( 5 )]
 		public int BannersPerAggregator = 5;
+		[DefaultValue( 1.5f )]
 		public float AggregatorFuelCostMultiplier = 1.5f;
 
+		[DefaultValue( 30 )]
 		public int InvasionArrivalTimeInSeconds = 30;
 
+		[DefaultValue( 80 )]
 		public int InvasionMinSize = 80;
+		[DefaultValue( 40 )]
 		public int InvasionAddedSizePerStrongPlayer = 40;
+		[DefaultValue( 72 )]
 		public int InvasionSpawnRate = 72;
+		[DefaultValue( 16 )]
 		public int InvasionSpawnMax = 16;
+		[DefaultValue( 2000f )]
 		public float InvasionSpawnRatePerType = 2000f;
 
+		[DefaultValue( 0.25f )]
 		public float InvaderLootDropPercentChance = 0.25f;
 
+		[DefaultValue( true )]
 		public bool CanCraftTrophiesIntoBanners = true;
 
+		[DefaultValue( true )]
 		public bool MidBossesAllowed = true;
+		[DefaultValue( 0.5f )]
 		public float MidBossHpMultiplier = 0.5f;
 
+		[DefaultValue( true )]
 		public bool AutoInvasions = true;
+		[DefaultValue( 9 )]
 		public int AutoInvasionAverageDays = 9;
 
+		[DefaultValue( true )]
 		public bool CanAbortInvasions = true;
+		[DefaultValue( 3 )]
 		public int InvasionAbortFuelCost = 3;
-
-
-
-		////
-
-		public const float _0_9_0_InvasionSpawnRatePerType = 1100f;
-
-
-
-		////////////////
-
-		public bool UpdateToLatestVersion() {
-			var newConfig = new DynamicInvasionsConfigData();
-			var versSince = this.VersionSinceUpdate != "" ?
-				new Version( this.VersionSinceUpdate ) :
-				new Version();
-
-			if( versSince >= DynamicInvasionsMod.Instance.Version ) {
-				return false;
-			}
-
-			if( versSince <= new Version(0, 9, 0) ) {
-				if( this.InvasionSpawnRatePerType == DynamicInvasionsConfigData._0_9_0_InvasionSpawnRatePerType ) {
-					this.InvasionSpawnRatePerType = newConfig.InvasionSpawnRatePerType;
-				}
-			}
-
-			this.VersionSinceUpdate = DynamicInvasionsMod.Instance.Version.ToString();
-
-			return true;
-		}
 	}
 }

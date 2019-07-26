@@ -1,5 +1,4 @@
-﻿using HamstarHelpers.Helpers.DebugHelpers;
-using HamstarHelpers.Helpers.PlayerHelpers;
+﻿using HamstarHelpers.Helpers.Players;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -13,7 +12,7 @@ namespace DynamicInvasions.Items {
 	//EphemeralEffectuatorItem
 	partial class CrossDimensionalAggregatorItem : ModItem {
 		public static Item GetFuelItemFromInventory( Player player ) {
-			return PlayerItemFinderHelpers.FindFirstOfItemFor( player, new HashSet<int> { ItemID.DD2ElderCrystal } );
+			return PlayerItemFinderHelpers.FindFirstOfPossessedItemFor( player, new HashSet<int> { ItemID.DD2ElderCrystal }, false );
 		}
 
 
@@ -85,7 +84,7 @@ namespace DynamicInvasions.Items {
 
 		public override void AddRecipes() {
 			var mymod = (DynamicInvasionsMod)this.mod;
-			var myrecipe = new CrossDimensionaAggregatorItemRecipe( mymod, mymod.ConfigJson.Data.BannersPerAggregator );
+			var myrecipe = new CrossDimensionaAggregatorItemRecipe( mymod, mymod.Config.BannersPerAggregator );
 			myrecipe.AddRecipe();
 
 			var revertRecipe = new ModRecipe( mymod );
@@ -105,7 +104,7 @@ namespace DynamicInvasions.Items {
 
 			int uses = this.item.GetGlobalItem<AggregatorItemInfo>().Uses;
 
-			return (int)((float)(uses + 1) * mymod.ConfigJson.Data.AggregatorFuelCostMultiplier);
+			return (int)((float)(uses + 1) * mymod.Config.AggregatorFuelCostMultiplier);
 		}
 	}
 }

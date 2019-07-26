@@ -1,5 +1,5 @@
-﻿using HamstarHelpers.Components.Config;
-using HamstarHelpers.Helpers.DebugHelpers;
+﻿using HamstarHelpers.Helpers.Debug;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
@@ -13,10 +13,6 @@ namespace DynamicInvasions.NetProtocol {
 			NetProtocolTypes protocol = (NetProtocolTypes)reader.ReadByte();
 
 			switch( protocol ) {
-			case NetProtocolTypes.RequestModSettings:
-				if( mymod.Config.DebugModeInfo ) { LogHelpers.Log( "ServerPacketHandlers.RequestModSettings" ); }
-				ServerPacketHandlers.ReceiveModSettingsRequestOnServer( reader, playerWho );
-				break;
 			case NetProtocolTypes.RequestInvasion:
 				if( mymod.Config.DebugModeInfo ) { LogHelpers.Log( "ServerPacketHandlers.RequestInvasion" ); }
 				ServerPacketHandlers.ReceiveInvasionRequestOnServer( reader, playerWho );
@@ -40,19 +36,6 @@ namespace DynamicInvasions.NetProtocol {
 		////////////////
 		// Server Senders
 		////////////////
-
-		public static void SendModSettingsFromServer( Player player ) {
-			// Server only
-			if( Main.netMode != 2 ) { return; }
-
-			var mymod = DynamicInvasionsMod.Instance;
-			ModPacket packet = mymod.GetPacket();
-
-			packet.Write( (byte)NetProtocolTypes.ModSettings );
-			packet.Write( (string)mymod.ConfigJson.SerializeMe() );
-
-			packet.Send( (int)player.whoAmI );
-		}
 
 		public static void SendInvasionFromServer( Player player, int musicType, string spawnInfoEnc ) {
 			// Server only
@@ -101,15 +84,6 @@ namespace DynamicInvasions.NetProtocol {
 		// Server Receivers
 		////////////////
 
-		private static void ReceiveModSettingsRequestOnServer( BinaryReader reader, int playerWho ) {
-			// Server only
-			if( Main.netMode != 2 ) { return; }
-
-			var mymod = DynamicInvasionsMod.Instance;
-
-			ServerPacketHandlers.SendModSettingsFromServer( Main.player[playerWho] );
-		}
-
 		private static void ReceiveInvasionRequestOnServer( BinaryReader reader, int playerWho ) {
 			// Server only
 			if( Main.netMode != 2 ) { return; }
@@ -117,7 +91,7 @@ namespace DynamicInvasions.NetProtocol {
 			var mymod = DynamicInvasionsMod.Instance;
 			int musicType = reader.ReadInt32();
 			string spawnInfoEnc = reader.ReadString();
-			var spawnInfo = JsonConfig<List<KeyValuePair<int, ISet<int>>>>.Deserialize( spawnInfoEnc );
+			var spawnInfo = JsonConvert.DeserializeObject<List<KeyValuePair<int, ISet<int>>>>( spawnInfoEnc );
 
 			var myworld = mymod.GetModWorld<DynamicInvasionsWorld>();
 			myworld.Logic.StartInvasion( musicType, spawnInfo.AsReadOnly() );

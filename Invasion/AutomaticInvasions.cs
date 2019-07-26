@@ -1,5 +1,4 @@
-﻿using HamstarHelpers.Helpers.WorldHelpers;
-using System;
+﻿using System;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -7,13 +6,13 @@ using Terraria.ModLoader;
 namespace DynamicInvasions.Invasion {
 	partial class AutomaticInvasions {
 		public AutomaticInvasions() {
-			WorldStateHelpers.AddDayHook( "dynamic_invasion", new Action( delegate {
+			HamstarHelpers.Services.Hooks.WorldHooks.WorldTimeHooks.AddDayHook( "dynamic_invasion", () => {
 				var mymod = (DynamicInvasionsMod)ModLoader.GetMod("DynamicInvasions");
 
-				if( Main.rand.Next( mymod.ConfigJson.Data.AutoInvasionAverageDays ) == 0 ) {
+				if( Main.rand.Next( mymod.Config.AutoInvasionAverageDays ) == 0 ) {
 					this.GenerateInvasion();
 				}
-			} ) );
+			} );
 		}
 
 

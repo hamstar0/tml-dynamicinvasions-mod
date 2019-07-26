@@ -1,4 +1,4 @@
-﻿using HamstarHelpers.Helpers.WorldHelpers;
+﻿using HamstarHelpers.Helpers.World;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
@@ -10,12 +10,12 @@ namespace DynamicInvasions {
 			if( Main.gameMenu ) { return; }
 
 			var mymod = (DynamicInvasionsMod)this.mod;
-			if( !mymod.ConfigJson.Data.Enabled ) { return; }
+			if( !mymod.Config.Enabled ) { return; }
 			var myworld = this.mod.GetModWorld<DynamicInvasionsWorld>();
 
 			if( myworld.Logic.HasInvasionFinishedArriving() && WorldHelpers.IsAboveWorldSurface( player.position ) ) {
-				spawnRate = mymod.ConfigJson.Data.InvasionSpawnRate;
-				maxSpawns = mymod.ConfigJson.Data.InvasionSpawnMax;
+				spawnRate = mymod.Config.InvasionSpawnRate;
+				maxSpawns = mymod.Config.InvasionSpawnMax;
 			}
 		}
 
@@ -23,7 +23,7 @@ namespace DynamicInvasions {
 			if( Main.gameMenu ) { return; }
 
 			var mymod = (DynamicInvasionsMod)this.mod;
-			if( !mymod.ConfigJson.Data.Enabled ) { return; }
+			if( !mymod.Config.Enabled ) { return; }
 			var myworld = this.mod.GetModWorld<DynamicInvasionsWorld>();
 
 			if( myworld.Logic.HasInvasionFinishedArriving() && WorldHelpers.IsAboveWorldSurface( spawnInfo.player.position ) ) {
@@ -36,7 +36,7 @@ namespace DynamicInvasions {
 			if( Main.gameMenu ) { return base.PreNPCLoot( npc ); }
 
 			var mymod = (DynamicInvasionsMod)this.mod;
-			if( !mymod.ConfigJson.Data.Enabled ) { return base.PreNPCLoot( npc ); }
+			if( !mymod.Config.Enabled ) { return base.PreNPCLoot( npc ); }
 
 			var myworld = this.mod.GetModWorld<DynamicInvasionsWorld>();
 
@@ -44,7 +44,7 @@ namespace DynamicInvasions {
 			bool isAboveSurface = WorldHelpers.IsAboveWorldSurface( npc.position );
 
 			if( hasInvasionArrived && isAboveSurface ) {
-				float chancePercent = mymod.ConfigJson.Data.InvaderLootDropPercentChance;
+				float chancePercent = mymod.Config.InvaderLootDropPercentChance;
 				return Main.rand.NextFloat() < chancePercent;
 			}
 			return base.PreNPCLoot( npc );
@@ -55,7 +55,7 @@ namespace DynamicInvasions {
 			if( Main.gameMenu ) { return base.CheckDead( npc ); }
 
 			var mymod = (DynamicInvasionsMod)this.mod;
-			if( !mymod.ConfigJson.Data.Enabled ) { return base.CheckDead(npc); }
+			if( !mymod.Config.Enabled ) { return base.CheckDead(npc); }
 			var modworld = this.mod.GetModWorld<DynamicInvasionsWorld>();
 
 			if( modworld.Logic.HasInvasionFinishedArriving() && WorldHelpers.IsAboveWorldSurface(npc.position) ) {

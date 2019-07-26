@@ -1,16 +1,11 @@
 ﻿using DynamicInvasions.NetProtocol;
-using HamstarHelpers.Components.Config;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using Terraria;
 
 
 namespace DynamicInvasions {
 	public static class DynamicInvasionsAPI {
-		public static DynamicInvasionsConfigData GetModSettings() {
-			return DynamicInvasionsMod.Instance.ConfigJson.Data;
-		}
-
-
 		public static void StartInvasion( int musicType, IReadOnlyList<KeyValuePair<int, ISet<int>>> spawnInfo ) {
 			var myworld = DynamicInvasionsMod.Instance.GetModWorld<DynamicInvasionsWorld>();
 
@@ -19,7 +14,7 @@ namespace DynamicInvasions {
 			} else if( Main.netMode == 1 ) {
 				ClientPacketHandlers.SendInvasionRequestFromClient( musicType, spawnInfo );
 			} else if( Main.netMode == 2 ) {
-				string spawnInfoEnc = JsonConfig<IReadOnlyList<KeyValuePair<int, ISet<int>>>>.Serialize( spawnInfo );
+				string spawnInfoEnc = JsonConvert.SerializeObject( spawnInfo );
 
 				myworld.Logic.StartInvasion( musicType, spawnInfo );
 

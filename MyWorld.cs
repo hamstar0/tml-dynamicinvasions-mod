@@ -50,7 +50,7 @@ namespace DynamicInvasions {
 
 		public override void PreUpdate() {
 			var mymod = (DynamicInvasionsMod)this.mod;
-			if( !mymod.ConfigJson.Data.Enabled ) { return; }
+			if( !mymod.Config.Enabled ) { return; }
 
 			if( Main.netMode == 2 ) {	// Server
 				this.Logic.Update();

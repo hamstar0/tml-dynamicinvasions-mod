@@ -1,6 +1,5 @@
 ﻿using DynamicInvasions.NetProtocol;
-using HamstarHelpers.Helpers.DebugHelpers;
-using HamstarHelpers.Helpers.ItemHelpers;
+using HamstarHelpers.Helpers.Items;
 using Microsoft.Xna.Framework;
 using System;
 using Terraria;
@@ -11,7 +10,7 @@ namespace DynamicInvasions.Items {
 	partial class CrossDimensionalAggregatorItem : ModItem {
 		public override bool CanUseItem( Player player ) {
 			var mymod = (DynamicInvasionsMod)this.mod;
-			if( !mymod.ConfigJson.Data.Enabled ) { return false; }
+			if( !mymod.Config.Enabled ) { return false; }
 
 			var modworld = mymod.GetModWorld<DynamicInvasionsWorld>();
 			var itemInfo = this.item.GetGlobalItem<AggregatorItemInfo>();

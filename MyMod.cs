@@ -1,6 +1,4 @@
-﻿using HamstarHelpers.Helpers.DebugHelpers;
-using HamstarHelpers.Components.Config;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using Terraria.ModLoader;
@@ -8,10 +6,9 @@ using Terraria.UI;
 using Terraria;
 using DynamicInvasions.NetProtocol;
 using DynamicInvasions.Invasion;
-using HamstarHelpers.Helpers.TmlHelpers;
 using HamstarHelpers.Components.Errors;
-using HamstarHelpers.Helpers.TmlHelpers.ModHelpers;
-using HamstarHelpers.Services.Promises;
+using HamstarHelpers.Services.Hooks.LoadHooks;
+using HamstarHelpers.Helpers.TModLoader.Mods;
 
 
 namespace DynamicInvasions {
@@ -20,8 +17,7 @@ namespace DynamicInvasions {
 
 
 
-		public JsonConfig<DynamicInvasionsConfigData> ConfigJson { get; private set; }
-		public DynamicInvasionsConfigData Config => this.ConfigJson.Data;
+		public DynamicInvasionsConfigData Config => this.GetConfig<DynamicInvasionsConfigData>();
 
 
 
@@ -29,43 +25,19 @@ namespace DynamicInvasions {
 
 		public DynamicInvasionsMod() {
 			DynamicInvasionsMod.Instance = this;
-
-			this.ConfigJson = new JsonConfig<DynamicInvasionsConfigData>( DynamicInvasionsConfigData.ConfigFileName,
-				ConfigurationDataBase.RelativePath, new DynamicInvasionsConfigData() );
 		}
 
 		////////////////
 
 		public override void Load() {
-			string depErr = TmlHelpers.ReportBadDependencyMods( this );
-			if( depErr != null ) { throw new HamstarException( depErr ); }
-
-			this.LoadConfig();
-
 			InvasionLogic.ModLoad();
 
-			Promises.AddPostWorldUnloadEachPromise( () => {
+			LoadHooks.AddPostWorldUnloadEachHook( () => {
 				try {
 					var myworld = this.GetModWorld<DynamicInvasionsWorld>();
 					myworld.Uninitialize();
 				} catch { }
 			} );
-		}
-
-		private void LoadConfig() {
-			try {
-				if( !this.ConfigJson.LoadFile() ) {
-					this.ConfigJson.SaveFile();
-				}
-			} catch( Exception e ) {
-				LogHelpers.Log( e.Message );
-				this.ConfigJson.SaveFile();
-			}
-
-			if( this.ConfigJson.Data.UpdateToLatestVersion() ) {
-				ErrorLogger.Log( "Dynamic Invasions updated to " + this.Version.ToString() );
-				this.ConfigJson.SaveFile();
-			}
 		}
 
 		public override void Unload() {
@@ -92,8 +64,8 @@ namespace DynamicInvasions {
 
 		////////////////
 
-		public override void UpdateMusic( ref int music ) {
-			if( !this.ConfigJson.Data.Enabled ) { return; }
+		public override void UpdateMusic( ref int music, ref MusicPriority priority ) {
+			if( !this.Config.Enabled ) { return; }
 
 			if( Main.myPlayer != -1 && !Main.gameMenu && Main.LocalPlayer.active ) {
 				var modworld = this.GetModWorld<DynamicInvasionsWorld>();
@@ -103,7 +75,7 @@ namespace DynamicInvasions {
 
 
 		public override void ModifyInterfaceLayers( List<GameInterfaceLayer> layers ) {
-			if( !this.ConfigJson.Data.Enabled ) { return; }
+			if( !this.Config.Enabled ) { return; }
 			int idx = layers.FindIndex( layer => layer.Name.Equals( "Vanilla: Invasion Progress Bars" ) );
 
 			if( idx != -1 ) {

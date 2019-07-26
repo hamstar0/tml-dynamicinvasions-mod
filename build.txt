@@ -1,7 +1,7 @@
 author = hamstar
-version = 0.9.1
+version = 0.9.2
 displayName = Dynamic Invasions
-modReferences = HamstarHelpers@4.2.4
+modReferences = HamstarHelpers@5.0.0
 buildIgnore = *.csproj, *.user, *.bat, obj\*, bin\*, .vs\*, .git\*
 languageVersion = 6
 homepage = https://forums.terraria.org/index.php?threads/dynamic-invasions.61060/

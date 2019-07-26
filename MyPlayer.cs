@@ -1,7 +1,8 @@
 ﻿using DynamicInvasions.Items;
 using DynamicInvasions.NetProtocol;
-using HamstarHelpers.Helpers.PlayerHelpers;
+using HamstarHelpers.Helpers.Players;
 using HamstarHelpers.Services.Messages;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -37,14 +38,10 @@ namespace DynamicInvasions {
 			var mymod = (DynamicInvasionsMod)this.mod;
 
 			if( Main.netMode == 0 ) {
-				if( !mymod.ConfigJson.LoadFile() ) {
-					mymod.ConfigJson.SaveFile();
-				}
 				this.FinishModSettingsSync();
 			}
 
 			if( Main.netMode == 1 ) {   // Client
-				ClientPacketHandlers.SendModSettingsRequestFromClient();
 				ClientPacketHandlers.SendInvasionStatusRequestFromClient();
 			}
 
@@ -71,7 +68,7 @@ namespace DynamicInvasions {
 
 		public override void PreUpdate() {
 			var mymod = (DynamicInvasionsMod)this.mod;
-			if( !mymod.ConfigJson.Data.Enabled ) { return; }
+			if( !mymod.Config.Enabled ) { return; }
 
 			if( this.player.whoAmI == Main.myPlayer ) {
 				var modworld = this.mod.GetModWorld<DynamicInvasionsWorld>();
@@ -86,7 +83,8 @@ namespace DynamicInvasions {
 				Item heldItem = this.player.HeldItem;
 
 				if( heldItem.type == this.mod.ItemType<CrossDimensionalAggregatorItem>() ) {
-					Dust.NewDust( PlayerItemHelpers.TipOfHeldItem( this.player ), heldItem.width, heldItem.height, 15, 0, 0, 150, Main.DiscoColor, 1.2f );
+					Vector2 pos = PlayerItemHelpers.TipOfHeldItem( this.player );
+					Dust.NewDust( pos, heldItem.width, heldItem.height, 15, 0, 0, 150, Main.DiscoColor, 1.2f );
 				}
 			}
 			

@@ -1,6 +1,6 @@
-﻿using HamstarHelpers.Helpers.DebugHelpers;
-using HamstarHelpers.Helpers.ItemHelpers;
-using HamstarHelpers.Helpers.NPCHelpers;
+﻿using HamstarHelpers.Helpers.Debug;
+using HamstarHelpers.Helpers.Items;
+using HamstarHelpers.Helpers.NPCs;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -84,9 +84,9 @@ namespace DynamicInvasions.Items {
 
 		public override bool RecipeAvailable() {
 			var mymod = (DynamicInvasionsMod)this.mod;
-			if( !mymod.ConfigJson.Data.Enabled ) { return false; }
+			if( !mymod.Config.Enabled ) { return false; }
 			
-			return mymod.ConfigJson.Data.CraftableAggregators;
+			return mymod.Config.CraftableAggregators;
 		}
 	}
 }
