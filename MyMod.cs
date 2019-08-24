@@ -6,7 +6,6 @@ using Terraria.UI;
 using Terraria;
 using DynamicInvasions.NetProtocol;
 using DynamicInvasions.Invasion;
-using HamstarHelpers.Components.Errors;
 using HamstarHelpers.Services.Hooks.LoadHooks;
 using HamstarHelpers.Helpers.TModLoader.Mods;
 

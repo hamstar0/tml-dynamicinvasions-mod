@@ -1,7 +1,7 @@
 ﻿using DynamicInvasions.Items;
 using DynamicInvasions.NetProtocol;
 using HamstarHelpers.Helpers.Players;
-using HamstarHelpers.Services.Messages;
+using HamstarHelpers.Services.Messages.Inbox;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;

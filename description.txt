@@ -6,7 +6,7 @@ Implements dynamic mob invasions. Craftable a Cross-Dimensional Aggregator to su
 - The Aggregator requires Eternia Crystals to summon
 - Any combo of mobs and choice of music may be provided
 - Each invasion summon increases crystal cost
-- Config file: "Documents/My Games/Terraria/ModLoader/Mod Configs/Dynamic Invasions Config.json"
+- Configurable
 
 Future plans
 - Automatic (randomized) invasion events.
