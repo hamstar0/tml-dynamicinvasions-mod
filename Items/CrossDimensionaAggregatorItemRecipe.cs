@@ -25,13 +25,13 @@ namespace DynamicInvasions.Items {
 			this.AddTile( TileID.TinkerersWorkbench );
 
 			if( !mymod.Config.DebugModeCheat && mymod.Config.MirrorsPerAggregator > 0 ) {
-				this.AddRecipeGroup( "HamstarHelpers:MagicMirrors", mymod.Config.MirrorsPerAggregator );
+				this.AddRecipeGroup( "ModHelpers:MagicMirrors", mymod.Config.MirrorsPerAggregator );
 				//this.AddIngredient( ItemID.DarkShard, 1 );  //ItemID.Obsidian
 				//this.AddIngredient( ItemID.LightShard, 1 ); //ItemID.Cloud
 			}
 
-			this.AddRecipeGroup( "HamstarHelpers:RecordedMusicBoxes", 1 );
-			this.AddRecipeGroup( "HamstarHelpers:NpcBanners", bannerCount );
+			this.AddRecipeGroup( "ModHelpers:RecordedMusicBoxes", 1 );
+			this.AddRecipeGroup( "ModHelpers:NpcBanners", bannerCount );
 			this.SetResult( mymod.ItemType<CrossDimensionalAggregatorItem>() );
 		}
 
