@@ -30,8 +30,8 @@ namespace DynamicInvasions.Items {
 				//this.AddIngredient( ItemID.LightShard, 1 ); //ItemID.Cloud
 			}
 
-			this.AddRecipeGroup( "ModHelpers:RecordedMusicBoxes", 1 );
-			this.AddRecipeGroup( "ModHelpers:NpcBanners", bannerCount );
+			this.AddRecipeGroup( "ModHelpers:VanillaRecordedMusicBoxes", 1 );
+			this.AddRecipeGroup( "ModHelpers:MobBanners", bannerCount );
 			this.SetResult( mymod.ItemType<CrossDimensionalAggregatorItem>() );
 		}
 
