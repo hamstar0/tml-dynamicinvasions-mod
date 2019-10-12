@@ -11,7 +11,7 @@ namespace DynamicInvasions {
 
 			var mymod = (DynamicInvasionsMod)this.mod;
 			if( !mymod.Config.Enabled ) { return; }
-			var myworld = this.mod.GetModWorld<DynamicInvasionsWorld>();
+			var myworld = ModContent.GetInstance<DynamicInvasionsWorld>();
 
 			if( myworld.Logic.HasInvasionFinishedArriving() && WorldHelpers.IsAboveWorldSurface( player.position ) ) {
 				spawnRate = mymod.Config.InvasionSpawnRate;
@@ -24,7 +24,7 @@ namespace DynamicInvasions {
 
 			var mymod = (DynamicInvasionsMod)this.mod;
 			if( !mymod.Config.Enabled ) { return; }
-			var myworld = this.mod.GetModWorld<DynamicInvasionsWorld>();
+			var myworld = ModContent.GetInstance<DynamicInvasionsWorld>();
 
 			if( myworld.Logic.HasInvasionFinishedArriving() && WorldHelpers.IsAboveWorldSurface( spawnInfo.player.position ) ) {
 				myworld.Logic.EditSpawnPool( pool, spawnInfo );
@@ -38,7 +38,7 @@ namespace DynamicInvasions {
 			var mymod = (DynamicInvasionsMod)this.mod;
 			if( !mymod.Config.Enabled ) { return base.PreNPCLoot( npc ); }
 
-			var myworld = this.mod.GetModWorld<DynamicInvasionsWorld>();
+			var myworld = ModContent.GetInstance<DynamicInvasionsWorld>();
 
 			bool hasInvasionArrived = myworld.Logic.HasInvasionFinishedArriving();
 			bool isAboveSurface = WorldHelpers.IsAboveWorldSurface( npc.position );
@@ -56,7 +56,7 @@ namespace DynamicInvasions {
 
 			var mymod = (DynamicInvasionsMod)this.mod;
 			if( !mymod.Config.Enabled ) { return base.CheckDead(npc); }
-			var modworld = this.mod.GetModWorld<DynamicInvasionsWorld>();
+			var modworld = ModContent.GetInstance<DynamicInvasionsWorld>();
 
 			if( modworld.Logic.HasInvasionFinishedArriving() && WorldHelpers.IsAboveWorldSurface(npc.position) ) {
 				if( npc.life <= 0 ) {

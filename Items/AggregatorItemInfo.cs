@@ -60,11 +60,11 @@ namespace DynamicInvasions.Items {
 
 
 		public override bool NeedsSaving( Item item ) {
-			return this.IsInitialized && item.type == this.mod.ItemType<CrossDimensionalAggregatorItem>();
+			return this.IsInitialized && item.type == ModContent.ItemType<CrossDimensionalAggregatorItem>();
 		}
 
 		public override void Load( Item item, TagCompound tags ) {
-			if( item.type != this.mod.ItemType<CrossDimensionalAggregatorItem>() ) { return; }
+			if( item.type != ModContent.ItemType<CrossDimensionalAggregatorItem>() ) { return; }
 
 			bool isInit = tags.GetBool( "is_init" );
 			int music = tags.GetInt( "music_type" );
@@ -85,7 +85,7 @@ namespace DynamicInvasions.Items {
 
 
 		public override TagCompound Save( Item item ) {
-			if( item.type != this.mod.ItemType<CrossDimensionalAggregatorItem>() ) { return new TagCompound(); }
+			if( item.type != ModContent.ItemType<CrossDimensionalAggregatorItem>() ) { return new TagCompound(); }
 
 			string spawnNpcEnc = "";
 			if( this.BannerItemTypesToNpcTypes != null ) {
@@ -102,7 +102,7 @@ namespace DynamicInvasions.Items {
 
 
 		public override void NetReceive( Item item, BinaryReader reader ) {
-			if( item.type != this.mod.ItemType<CrossDimensionalAggregatorItem>() ) { return; }
+			if( item.type != ModContent.ItemType<CrossDimensionalAggregatorItem>() ) { return; }
 
 			bool isInit = reader.ReadBoolean();
 			int music = reader.ReadInt32();
@@ -122,7 +122,7 @@ namespace DynamicInvasions.Items {
 		}
 
 		public override void NetSend( Item item, BinaryWriter writer ) {
-			if( item.type != this.mod.ItemType<CrossDimensionalAggregatorItem>() ) { return; }
+			if( item.type != ModContent.ItemType<CrossDimensionalAggregatorItem>() ) { return; }
 
 			string spawnNpcEnc = "";
 			if( this.BannerItemTypesToNpcTypes != null ) {

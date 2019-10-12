@@ -2,12 +2,13 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.ModLoader;
 
 
 namespace DynamicInvasions {
 	public static class DynamicInvasionsAPI {
 		public static void StartInvasion( int musicType, IReadOnlyList<KeyValuePair<int, ISet<int>>> spawnInfo ) {
-			var myworld = DynamicInvasionsMod.Instance.GetModWorld<DynamicInvasionsWorld>();
+			var myworld = ModContent.GetInstance<DynamicInvasionsWorld>();
 
 			if( Main.netMode == 0 ) {
 				myworld.Logic.StartInvasion( musicType, spawnInfo );
@@ -28,7 +29,7 @@ namespace DynamicInvasions {
 		}
 
 		public static void EndInvasion() {
-			var myworld = DynamicInvasionsMod.Instance.GetModWorld<DynamicInvasionsWorld>();
+			var myworld = ModContent.GetInstance<DynamicInvasionsWorld>();
 
 			if( Main.netMode == 0 ) {
 				myworld.Logic.EndInvasion();

@@ -18,7 +18,7 @@ namespace DynamicInvasions {
 
 		////////////////
 
-		public DynamicInvasionsConfigData Config => this.GetConfig<DynamicInvasionsConfigData>();
+		public DynamicInvasionsConfig Config => ModContent.GetInstance<DynamicInvasionsConfig>();
 
 
 
@@ -35,7 +35,7 @@ namespace DynamicInvasions {
 
 			LoadHooks.AddPostWorldUnloadEachHook( () => {
 				try {
-					var myworld = this.GetModWorld<DynamicInvasionsWorld>();
+					var myworld = ModContent.GetInstance<DynamicInvasionsWorld>();
 					myworld.Uninitialize();
 				} catch { }
 			} );
@@ -69,7 +69,7 @@ namespace DynamicInvasions {
 			if( this.Config == null || !this.Config.Enabled ) { return; }
 
 			if( Main.myPlayer != -1 && !Main.gameMenu && Main.LocalPlayer.active ) {
-				var modworld = this.GetModWorld<DynamicInvasionsWorld>();
+				var modworld = ModContent.GetInstance<DynamicInvasionsWorld>();
 				modworld.Logic.UpdateMusic( ref music );
 			}
 		}
@@ -82,7 +82,7 @@ namespace DynamicInvasions {
 			if( idx != -1 ) {
 				var func = new GameInterfaceDrawMethod( delegate() {
 						if( Main.netMode != 2 ) {  // Not server
-						var modworld = this.GetModWorld<DynamicInvasionsWorld>();
+						var modworld = ModContent.GetInstance<DynamicInvasionsWorld>();
 
 						if( modworld.Logic.RunProgressBarAnimation() ) {
 							modworld.Logic.DrawProgressBar( Main.spriteBatch );

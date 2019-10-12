@@ -86,12 +86,11 @@ namespace DynamicInvasions.NetProtocol {
 			// Clients only
 			if( Main.netMode != 1 ) { return; }
 
-			var mymod = DynamicInvasionsMod.Instance;
 			int musicType = reader.ReadInt32();
 			string spawnInfoEnc = reader.ReadString();
 			var spawnInfo = JsonConvert.DeserializeObject<List<KeyValuePair<int, ISet<int>>>>( spawnInfoEnc );
 
-			var modworld = mymod.GetModWorld<DynamicInvasionsWorld>();
+			var modworld = ModContent.GetInstance<DynamicInvasionsWorld>();
 			modworld.Logic.StartInvasion( musicType, spawnInfo.AsReadOnly() );
 		}
 
@@ -99,8 +98,7 @@ namespace DynamicInvasions.NetProtocol {
 			// Clients only
 			if( Main.netMode != 1 ) { return; }
 
-			var mymod = DynamicInvasionsMod.Instance;
-			var modworld = mymod.GetModWorld<DynamicInvasionsWorld>();
+			var modworld = ModContent.GetInstance<DynamicInvasionsWorld>();
 
 			modworld.Logic.MyNetReceive( reader );
 		}
@@ -109,8 +107,7 @@ namespace DynamicInvasions.NetProtocol {
 			// Clients only
 			if( Main.netMode != 1 ) { return; }
 
-			var mymod = DynamicInvasionsMod.Instance;
-			var modworld = mymod.GetModWorld<DynamicInvasionsWorld>();
+			var modworld = ModContent.GetInstance<DynamicInvasionsWorld>();
 
 			modworld.Logic.EndInvasion();
 		}

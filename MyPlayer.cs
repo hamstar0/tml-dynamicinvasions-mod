@@ -71,7 +71,7 @@ namespace DynamicInvasions {
 			if( !mymod.Config.Enabled ) { return; }
 
 			if( this.player.whoAmI == Main.myPlayer ) {
-				var modworld = this.mod.GetModWorld<DynamicInvasionsWorld>();
+				var modworld = ModContent.GetInstance<DynamicInvasionsWorld>();
 				modworld.Logic.Update();
 			}
 		}
@@ -82,7 +82,7 @@ namespace DynamicInvasions {
 			if( this.player.itemAnimation > 0 ) {
 				Item heldItem = this.player.HeldItem;
 
-				if( heldItem.type == this.mod.ItemType<CrossDimensionalAggregatorItem>() ) {
+				if( heldItem.type == ModContent.ItemType<CrossDimensionalAggregatorItem>() ) {
 					Vector2 pos = PlayerItemHelpers.TipOfHeldItem( this.player );
 					Dust.NewDust( pos, heldItem.width, heldItem.height, 15, 0, 0, 150, Main.DiscoColor, 1.2f );
 				}

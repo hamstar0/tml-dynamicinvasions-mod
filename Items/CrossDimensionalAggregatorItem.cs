@@ -88,7 +88,7 @@ namespace DynamicInvasions.Items {
 			myrecipe.AddRecipe();
 
 			var revertRecipe = new ModRecipe( mymod );
-			revertRecipe.AddIngredient( mymod.ItemType<CrossDimensionalAggregatorItem>(), 1 );
+			revertRecipe.AddIngredient( ModContent.ItemType<CrossDimensionalAggregatorItem>(), 1 );
 			revertRecipe.SetResult( ItemID.MagicMirror, 1 );
 			revertRecipe.AddRecipe();
 		}

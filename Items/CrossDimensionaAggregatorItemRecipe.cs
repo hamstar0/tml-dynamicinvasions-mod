@@ -32,7 +32,7 @@ namespace DynamicInvasions.Items {
 
 			this.AddRecipeGroup( "ModHelpers:VanillaRecordedMusicBoxes", 1 );
 			this.AddRecipeGroup( "ModHelpers:MobBanners", bannerCount );
-			this.SetResult( mymod.ItemType<CrossDimensionalAggregatorItem>() );
+			this.SetResult( ModContent.ItemType<CrossDimensionalAggregatorItem>() );
 		}
 
 		public override int ConsumeItem( int itemType, int numRequired ) {
