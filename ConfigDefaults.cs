@@ -5,6 +5,12 @@ using Terraria.ModLoader.Config;
 
 
 namespace DynamicInvasions {
+	class MyFloatInputElement : FloatInputElement { }
+
+
+
+
+
 	public class DynamicInvasionsConfig : ModConfig {
 		public override ConfigScope Mode => ConfigScope.ServerSide;
 
@@ -25,7 +31,7 @@ namespace DynamicInvasions {
 		[DefaultValue( 5 )]
 		public int BannersPerAggregator = 5;
 		[DefaultValue( 1.5f )]
-		[CustomModConfigItem( typeof( FloatInputElement ) )]
+		[CustomModConfigItem( typeof( MyFloatInputElement ) )]
 		public float AggregatorFuelCostMultiplier = 1.5f;
 
 		[DefaultValue( 30 )]
@@ -43,7 +49,7 @@ namespace DynamicInvasions {
 		public float InvasionSpawnRatePerType = 2000f;
 
 		[DefaultValue( 0.25f )]
-		[CustomModConfigItem( typeof( FloatInputElement ) )]
+		[CustomModConfigItem( typeof( MyFloatInputElement ) )]
 		public float InvaderLootDropPercentChance = 0.25f;
 
 		[DefaultValue( true )]
@@ -52,7 +58,7 @@ namespace DynamicInvasions {
 		[DefaultValue( true )]
 		public bool MidBossesAllowed = true;
 		[DefaultValue( 0.5f )]
-		[CustomModConfigItem( typeof( FloatInputElement ) )]
+		[CustomModConfigItem( typeof( MyFloatInputElement ) )]
 		public float MidBossHpMultiplier = 0.5f;
 
 		[DefaultValue( true )]
