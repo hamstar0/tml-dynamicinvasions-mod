@@ -177,8 +177,11 @@ namespace DynamicInvasions.Invasion {
 			var mymod = DynamicInvasionsMod.Instance;
 
 			foreach( int npcType in this.Data.SpawnNpcTypeList ) {
-				if( !pool.ContainsKey(npcType) ) { pool[npcType] = mymod.Config.InvasionSpawnRatePerType; }
-				else { pool[npcType] += mymod.Config.InvasionSpawnRatePerType; }
+				if( !pool.ContainsKey(npcType) ) {
+					pool[npcType] = mymod.Config.InvasionSpawnRatePerType;
+				} else {
+					pool[npcType] += mymod.Config.InvasionSpawnRatePerType;
+				}
 			}
 		}
 	}

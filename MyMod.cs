@@ -90,7 +90,11 @@ namespace DynamicInvasions {
 					}
 					return true;
 				} );
-				var layer = new LegacyGameInterfaceLayer( "DynamicInvasions: Progress", func, InterfaceScaleType.UI );
+				var layer = new LegacyGameInterfaceLayer(
+					"DynamicInvasions: Progress",
+					func,
+					InterfaceScaleType.UI
+				);
 
 				layers.Insert( idx, layer );
 			}

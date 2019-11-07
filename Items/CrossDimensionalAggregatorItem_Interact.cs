@@ -66,9 +66,14 @@ namespace DynamicInvasions.Items {
 
 			if( mymod.Config.CanAbortInvasions && myworld.Logic.IsInvasionHappening() ) {
 				Item fuelItem = CrossDimensionalAggregatorItem.GetFuelItemFromInventory( player );
-				
-				if( fuelItem != null && !fuelItem.IsAir && fuelItem.stack >= mymod.Config.InvasionAbortFuelCost ) {
-					ItemHelpers.ReduceStack( fuelItem, mymod.Config.InvasionAbortFuelCost );
+				int fuelAmt = fuelItem != null && !fuelItem.IsAir
+					? fuelItem.stack
+					: 0;
+
+				if( mymod.Config.InvasionAbortFuelCost == 0 || fuelAmt >= mymod.Config.InvasionAbortFuelCost ) {
+					if( mymod.Config.InvasionAbortFuelCost > 0 ) {
+						ItemHelpers.ReduceStack( fuelItem, mymod.Config.InvasionAbortFuelCost );
+					}
 
 					Main.NewText( "Ending invasion..." );
 
