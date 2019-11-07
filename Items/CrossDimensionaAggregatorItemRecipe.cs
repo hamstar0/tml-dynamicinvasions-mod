@@ -36,19 +36,28 @@ namespace DynamicInvasions.Items {
 			this.SetResult( ModContent.ItemType<CrossDimensionalAggregatorItem>() );
 		}
 
-		public override int ConsumeItem( int itemType, int numRequired ) {
+		////
+
+		public override int ConsumeItem( int ingredientOrRecipeGroupItemType, int numRequired ) {
 			int consumed;
+			Item consumedItem = this.MarkConsumeBannerItems( ingredientOrRecipeGroupItemType, numRequired, out consumed );
 			
-			if( !this.MarkConsumeBannerItems(itemType, numRequired, out consumed) ) {
-				if( this.MarkConsumeMusicBoxItem( itemType ) ) {
+			if( consumedItem == null ) {
+				consumedItem = this.MarkConsumeMusicBoxItem( ingredientOrRecipeGroupItemType );
+
+				if( consumedItem != null ) {
 					consumed = 1;
 				}
 			}
 
 			if( DynamicInvasionsMod.Config.DebugModeInfo ) {
-				Item item = new Item();
-				item.SetDefaults( itemType, true );
-				LogHelpers.Log( "Consumed "+consumed+" of "+numRequired+" of "+itemType+" ("+item.Name+")" );
+				if( consumedItem == null ) {
+					Item item = new Item();
+					item.SetDefaults( ingredientOrRecipeGroupItemType, true );
+					LogHelpers.Log( "No item consumed of ingredient/recipe group ["+ ingredientOrRecipeGroupItemType + "] ("+item.Name+")" );
+				} else {
+					LogHelpers.Log( "Consumed "+consumed+" of "+numRequired+" of item ["+consumedItem.type+"] ("+consumedItem.Name+")" );
+				}
 			}
 
 			return numRequired;
@@ -56,28 +65,25 @@ namespace DynamicInvasions.Items {
 
 		////
 
-		private bool MarkConsumeBannerItems( int consumedItemType, int numRequired, out int consumed ) {
+		private Item MarkConsumeBannerItems( int consumedItemGroupType, int numRequired, out int consumed ) {
 			var bannerItemTypes = NPCBannerHelpers.GetBannerItemTypes();
-			if( !bannerItemTypes.Contains(consumedItemType) ) {
+			if( !bannerItemTypes.Contains(consumedItemGroupType) ) {
 				consumed = 0;
-				return false;
+				return null;
 			}
-
+			
 			Item[] inv = Main.LocalPlayer.inventory;
-			int itemIdx = inv.FirstOrDefault(
-				( item ) => {
-					return (!item?.IsAir ?? false)
-						|| item.type == consumedItemType;
-				} )?.type ?? -1;
-			if( itemIdx == -1 ) {
-				LogHelpers.Warn( "Could not find item of type " + consumedItemType );
+			Item bannerItem = inv.FirstOrDefault( ( item ) => {
+				return !(item?.IsAir ?? true)
+					&& bannerItemTypes.Contains(item.type);
+			} );
+			if( bannerItem == null ) {
 				consumed = 0;
-				return false;
+				return null;
 			}
 
 			this.BannerItemTypes = new List<int>();
 
-			Item bannerItem = inv[itemIdx];
 			int i;
 			for( i = 0; i < bannerItem.stack; i++ ) {
 				this.BannerItemTypes.Add( bannerItem.type );
@@ -88,23 +94,25 @@ namespace DynamicInvasions.Items {
 			}
 
 			consumed = i;
-			return true;
+			return bannerItem;
 		}
 
-		private bool MarkConsumeMusicBoxItem( int consumedItemType ) {
+		private Item MarkConsumeMusicBoxItem( int consumedItemGroupType ) {
 			var musicItemTypes = MusicBoxHelpers.GetVanillaMusicBoxItemIds();
-			if( musicItemTypes.Contains(consumedItemType) ) {
-				return false;
+			if( !musicItemTypes.Contains(consumedItemGroupType) ) {
+				return null;
 			}
 
 			Item[] inv = Main.LocalPlayer.inventory;
 			//var musicItemTypes = MusicBoxHelpers.GetVanillaMusicBoxItemIds();
 
-			this.MusicBoxItemType = inv.FirstOrDefault( ( item ) => {
-				return (!item?.IsAir ?? false) && consumedItemType == item.type;
-			} )?.type ?? -1;
+			Item musicBoxItem = inv.FirstOrDefault( ( item ) => {
+				return !(item?.IsAir ?? true)
+					&& musicItemTypes.Contains(item.type);
+			} );
+			this.MusicBoxItemType = musicBoxItem?.type ?? -1;
 
-			return true;
+			return musicBoxItem;
 		}
 
 
@@ -115,7 +123,7 @@ namespace DynamicInvasions.Items {
 				throw new Exception( "No music box given for custom invasion summon item." );
 			}
 			if( this.BannerItemTypes.Count < this.BannerCount ) {
-				throw new Exception( "Insufficient or no banners given for custom invasion summon item." );
+				throw new Exception( "Need "+this.BannerCount+" banners (of "+this.BannerItemTypes.Count+") for custom invasion summon item." );
 			}
 
 			var itemInfo = item.GetGlobalItem<AggregatorItemInfo>();
