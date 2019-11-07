@@ -24,9 +24,7 @@ namespace DynamicInvasions {
 		////////////////
 
 		public override void Load( TagCompound tags ) {
-			var mymod = (DynamicInvasionsMod)this.mod;
-
-			if( mymod.Config.DebugModeReset ) {
+			if( DynamicInvasionsMod.Config.DebugModeReset ) {
 				Main.invasionDelay = 0;
 			} else {
 				this.Logic.LoadMe( tags );
@@ -49,8 +47,7 @@ namespace DynamicInvasions {
 		////////////////
 
 		public override void PreUpdate() {
-			var mymod = (DynamicInvasionsMod)this.mod;
-			if( !mymod.Config.Enabled ) { return; }
+			if( !DynamicInvasionsMod.Config.Enabled ) { return; }
 
 			if( Main.netMode == 2 ) {	// Server
 				this.Logic.Update();

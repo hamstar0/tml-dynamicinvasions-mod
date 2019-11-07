@@ -9,24 +9,23 @@ using Terraria.ModLoader;
 namespace DynamicInvasions.NetProtocol {
 	static class ClientPacketHandlers {
 		public static void HandlePacket( BinaryReader reader ) {
-			var mymod = DynamicInvasionsMod.Instance;
 			NetProtocolTypes protocol = (NetProtocolTypes)reader.ReadByte();
 
 			switch( protocol ) {
 			case NetProtocolTypes.Invasion:
-				if( mymod.Config.DebugModeInfo ) { LogHelpers.Log( "ClientPacketHandlers.Invasion" ); }
+				if( DynamicInvasionsMod.Config.DebugModeInfo ) { LogHelpers.Log( "ClientPacketHandlers.Invasion" ); }
 				ClientPacketHandlers.ReceiveInvasionOnClient( reader );
 				break;
 			case NetProtocolTypes.InvasionStatus:
-				if( mymod.Config.DebugModeInfo ) { LogHelpers.Log( "ClientPacketHandlers.InvasionStatus" ); }
+				if( DynamicInvasionsMod.Config.DebugModeInfo ) { LogHelpers.Log( "ClientPacketHandlers.InvasionStatus" ); }
 				ClientPacketHandlers.ReceiveInvasionStatusOnClient( reader );
 				break;
 			case NetProtocolTypes.EndInvasion:
-				if( mymod.Config.DebugModeInfo ) { LogHelpers.Log( "ClientPacketHandlers.EndInvasion" ); }
+				if( DynamicInvasionsMod.Config.DebugModeInfo ) { LogHelpers.Log( "ClientPacketHandlers.EndInvasion" ); }
 				ClientPacketHandlers.ReceiveEndInvasionOnClient( reader );
 				break;
 			default:
-				if( mymod.Config.DebugModeInfo ) { LogHelpers.Log( "ClientPacketHandlers ...? " + protocol ); }
+				if( DynamicInvasionsMod.Config.DebugModeInfo ) { LogHelpers.Log( "ClientPacketHandlers ...? " + protocol ); }
 				break;
 			}
 		}

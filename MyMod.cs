@@ -14,11 +14,7 @@ namespace DynamicInvasions {
 	partial class DynamicInvasionsMod : Mod {
 		public static DynamicInvasionsMod Instance { get; private set; }
 
-
-
-		////////////////
-
-		public DynamicInvasionsConfig Config => ModContent.GetInstance<DynamicInvasionsConfig>();
+		public static DynamicInvasionsConfig Config => ModContent.GetInstance<DynamicInvasionsConfig>();
 
 
 
@@ -66,7 +62,7 @@ namespace DynamicInvasions {
 		////////////////
 
 		public override void UpdateMusic( ref int music, ref MusicPriority priority ) {
-			if( this.Config == null || !this.Config.Enabled ) { return; }
+			if( DynamicInvasionsMod.Config == null || !DynamicInvasionsMod.Config.Enabled ) { return; }
 
 			if( Main.myPlayer != -1 && !Main.gameMenu && Main.LocalPlayer.active ) {
 				var modworld = ModContent.GetInstance<DynamicInvasionsWorld>();
@@ -76,7 +72,7 @@ namespace DynamicInvasions {
 
 
 		public override void ModifyInterfaceLayers( List<GameInterfaceLayer> layers ) {
-			if( this.Config == null || !this.Config.Enabled ) { return; }
+			if( DynamicInvasionsMod.Config == null || !DynamicInvasionsMod.Config.Enabled ) { return; }
 			int idx = layers.FindIndex( layer => layer.Name.Equals( "Vanilla: Invasion Progress Bars" ) );
 
 			if( idx != -1 ) {

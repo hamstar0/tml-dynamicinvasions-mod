@@ -9,24 +9,23 @@ using Terraria.ModLoader;
 namespace DynamicInvasions.NetProtocol {
 	static class ServerPacketHandlers {
 		public static void RoutePacket( BinaryReader reader, int playerWho ) {
-			var mymod = DynamicInvasionsMod.Instance;
 			NetProtocolTypes protocol = (NetProtocolTypes)reader.ReadByte();
 
 			switch( protocol ) {
 			case NetProtocolTypes.RequestInvasion:
-				if( mymod.Config.DebugModeInfo ) { LogHelpers.Log( "ServerPacketHandlers.RequestInvasion" ); }
+				if( DynamicInvasionsMod.Config.DebugModeInfo ) { LogHelpers.Log( "ServerPacketHandlers.RequestInvasion" ); }
 				ServerPacketHandlers.ReceiveInvasionRequestOnServer( reader, playerWho );
 				break;
 			case NetProtocolTypes.RequestInvasionStatus:
-				if( mymod.Config.DebugModeInfo ) { LogHelpers.Log( "ServerPacketHandlers.RequestInvasionStatus" ); }
+				if( DynamicInvasionsMod.Config.DebugModeInfo ) { LogHelpers.Log( "ServerPacketHandlers.RequestInvasionStatus" ); }
 				ServerPacketHandlers.ReceiveInvasionStatusRequestOnServer( reader, playerWho );
 				break;
 			case NetProtocolTypes.RequestEndInvasion:
-				if( mymod.Config.DebugModeInfo ) { LogHelpers.Log( "ServerPacketHandlers.RequestEndInvasion" ); }
+				if( DynamicInvasionsMod.Config.DebugModeInfo ) { LogHelpers.Log( "ServerPacketHandlers.RequestEndInvasion" ); }
 				ServerPacketHandlers.ReceiveEndInvasionRequestOnServer( reader, playerWho );
 				break;
 			default:
-				if( mymod.Config.DebugModeInfo ) { LogHelpers.Log( "ServerPacketHandlers ...? " + protocol ); }
+				if( DynamicInvasionsMod.Config.DebugModeInfo ) { LogHelpers.Log( "ServerPacketHandlers ...? " + protocol ); }
 				break;
 			}
 		}

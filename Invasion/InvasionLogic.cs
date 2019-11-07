@@ -77,13 +77,13 @@ namespace DynamicInvasions.Invasion {
 
 
 		public void StartInvasion( int musicType, IReadOnlyList<KeyValuePair<int, ISet<int>>> spawnInfo ) {
-			var mymod = DynamicInvasionsMod.Instance;
+			var config = DynamicInvasionsMod.Config;
 
 			Main.invasionDelay = 2; // Lightweight invasion
 			var spawnNpcs = spawnInfo.SelectMany( id => id.Value ).ToList();
 			int size = 0;
 
-			if( mymod.Config.DebugModeInfo ) {
+			if( config.DebugModeInfo ) {
 				string str = string.Join( ",", spawnNpcs.ToArray() );
 				LogHelpers.Log( "starting invasion music: " + musicType + ", npcs: " + str );
 			}
@@ -98,15 +98,15 @@ namespace DynamicInvasions.Invasion {
 				invadablePlayerCount = 1;
 			}
 
-			if( mymod.Config.DebugModeCheat ) {
+			if( config.DebugModeCheat ) {
 				size = 30;
 			} else {
-				int baseAmt = mymod.Config.InvasionMinSize;
-				int perPlayerAmt = mymod.Config.InvasionAddedSizePerStrongPlayer;
+				int baseAmt = config.InvasionMinSize;
+				int perPlayerAmt = config.InvasionAddedSizePerStrongPlayer;
 				size = baseAmt + (perPlayerAmt * invadablePlayerCount);
 			}
 
-			this.Data.Initialize( true, size, size, 60 * mymod.Config.InvasionArrivalTimeInSeconds, 0, 0, musicType, spawnNpcs );
+			this.Data.Initialize( true, size, size, 60 * config.InvasionArrivalTimeInSeconds, 0, 0, musicType, spawnNpcs );
 		}
 
 		
@@ -131,9 +131,7 @@ namespace DynamicInvasions.Invasion {
 		////////////////
 
 		public void Update() {
-			var mymod = DynamicInvasionsMod.Instance;
-
-			if( mymod.Config.DebugModeInfo ) {
+			if( DynamicInvasionsMod.Config.DebugModeInfo ) {
 				DebugHelpers.Print( "DynamicInvasionInfo", "IsInvading: "+this.Data.IsInvading+
 					", : enroute: "+this.Data.InvasionEnrouteDuration+
 					", size: "+this.Data.InvasionSize+
@@ -174,13 +172,11 @@ namespace DynamicInvasions.Invasion {
 		////////////////
 
 		public void EditSpawnPool( IDictionary<int, float> pool, NPCSpawnInfo spawnInfo ) {
-			var mymod = DynamicInvasionsMod.Instance;
-
 			foreach( int npcType in this.Data.SpawnNpcTypeList ) {
 				if( !pool.ContainsKey(npcType) ) {
-					pool[npcType] = mymod.Config.InvasionSpawnRatePerType;
+					pool[npcType] = DynamicInvasionsMod.Config.InvasionSpawnRatePerType;
 				} else {
-					pool[npcType] += mymod.Config.InvasionSpawnRatePerType;
+					pool[npcType] += DynamicInvasionsMod.Config.InvasionSpawnRatePerType;
 				}
 			}
 		}

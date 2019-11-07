@@ -9,8 +9,7 @@ using Terraria.ModLoader;
 namespace DynamicInvasions.Items {
 	partial class CrossDimensionalAggregatorItem : ModItem {
 		public override bool CanUseItem( Player player ) {
-			var mymod = (DynamicInvasionsMod)this.mod;
-			if( !mymod.Config.Enabled ) { return false; }
+			if( !DynamicInvasionsMod.Config.Enabled ) { return false; }
 
 			var modworld = ModContent.GetInstance<DynamicInvasionsWorld>();
 			var itemInfo = this.item.GetGlobalItem<AggregatorItemInfo>();
@@ -61,18 +60,18 @@ namespace DynamicInvasions.Items {
 		}
 
 		public override void RightClick( Player player ) {
-			var mymod = (DynamicInvasionsMod)this.mod;
+			var config = DynamicInvasionsMod.Config;
 			var myworld = ModContent.GetInstance<DynamicInvasionsWorld>();
 
-			if( mymod.Config.CanAbortInvasions && myworld.Logic.IsInvasionHappening() ) {
+			if( config.CanAbortInvasions && myworld.Logic.IsInvasionHappening() ) {
 				Item fuelItem = CrossDimensionalAggregatorItem.GetFuelItemFromInventory( player );
 				int fuelAmt = fuelItem != null && !fuelItem.IsAir
 					? fuelItem.stack
 					: 0;
 
-				if( mymod.Config.InvasionAbortFuelCost == 0 || fuelAmt >= mymod.Config.InvasionAbortFuelCost ) {
-					if( mymod.Config.InvasionAbortFuelCost > 0 ) {
-						ItemHelpers.ReduceStack( fuelItem, mymod.Config.InvasionAbortFuelCost );
+				if( config.InvasionAbortFuelCost == 0 || fuelAmt >= config.InvasionAbortFuelCost ) {
+					if( config.InvasionAbortFuelCost > 0 ) {
+						ItemHelpers.ReduceStack( fuelItem, config.InvasionAbortFuelCost );
 					}
 
 					Main.NewText( "Ending invasion..." );
@@ -83,7 +82,7 @@ namespace DynamicInvasions.Items {
 						ClientPacketHandlers.SendEndInvasionRequestFromClient();
 					}
 				} else {
-					Main.NewText( "You need "+mymod.Config.InvasionAbortFuelCost+" Eternia Crystals to abort an invasion.", Color.Yellow );
+					Main.NewText( "You need "+config.InvasionAbortFuelCost+" Eternia Crystals to abort an invasion.", Color.Yellow );
 				}
 			} else {
 				Main.NewText( "No custom invasion in progress.", Color.Yellow );
@@ -116,12 +115,11 @@ namespace DynamicInvasions.Items {
 		}
 
 		private void ActivateInvasion( Item fuelItem ) {
-			var mymod = (DynamicInvasionsMod)this.mod;
 			var myworld = ModContent.GetInstance<DynamicInvasionsWorld>();
 			var itemInfo = this.item.GetGlobalItem<AggregatorItemInfo>();
 			int fuelCost = this.GetFuelCost();
 
-			if( mymod.Config.DebugModeInfo ) {
+			if( DynamicInvasionsMod.Config.DebugModeInfo ) {
 				Main.NewText( "Activating invasion..." );
 			}
 

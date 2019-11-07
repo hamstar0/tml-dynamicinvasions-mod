@@ -51,13 +51,11 @@ namespace DynamicInvasions {
 		////
 
 		internal void FinishModSettingsSync() {
-			var mymod = (DynamicInvasionsMod)this.mod;
-
 			string msg = "Want to summon custom invasions? Craft a Cross Dimensional Aggregator item at a Tinkerer's Workship with: ";
-			if( mymod.Config.MirrorsPerAggregator > 0 ) {
-				msg += mymod.Config.MirrorsPerAggregator + "x Magic/Ice Mirror, ";
+			if( DynamicInvasionsMod.Config.MirrorsPerAggregator > 0 ) {
+				msg += DynamicInvasionsMod.Config.MirrorsPerAggregator + "x Magic/Ice Mirror, ";
 			}
-			msg += mymod.Config.BannersPerAggregator + "x monster banners (any), ";
+			msg += DynamicInvasionsMod.Config.BannersPerAggregator + "x monster banners (any), ";
 			msg += "1x Music Box (recorded)";
 
 			InboxMessages.SetMessage( "DynamicInvasionsRecipe", msg, false );
@@ -67,8 +65,7 @@ namespace DynamicInvasions {
 		////////////////
 
 		public override void PreUpdate() {
-			var mymod = (DynamicInvasionsMod)this.mod;
-			if( !mymod.Config.Enabled ) { return; }
+			if( !DynamicInvasionsMod.Config.Enabled ) { return; }
 
 			if( this.player.whoAmI == Main.myPlayer ) {
 				var modworld = ModContent.GetInstance<DynamicInvasionsWorld>();

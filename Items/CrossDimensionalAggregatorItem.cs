@@ -44,7 +44,7 @@ namespace DynamicInvasions.Items {
 		////////////////
 
 		public override void ModifyTooltips( List<TooltipLine> tooltips ) {
-			var mymod = (DynamicInvasionsMod)this.mod;
+			var config = DynamicInvasionsMod.Config;
 			var itemInfo = this.item.GetGlobalItem<AggregatorItemInfo>();
 
 			if( !itemInfo.IsInitialized ) {
@@ -55,9 +55,9 @@ namespace DynamicInvasions.Items {
 				return;
 			}
 
-			if( mymod.Config.CanAbortInvasions ) {
-				string abortTipStr = mymod.Config.InvasionAbortFuelCost >= 1
-					? "Right-click to abort current invasion (costs "+mymod.Config.InvasionAbortFuelCost+" Eternia Crystals)."
+			if( config.CanAbortInvasions ) {
+				string abortTipStr = config.InvasionAbortFuelCost >= 1
+					? "Right-click to abort current invasion (costs "+ config.InvasionAbortFuelCost+" Eternia Crystals)."
 					: "Right-click to abort current invasion.";
 				var abortTip = new TooltipLine( this.mod, "AggregatorAbort", abortTipStr );
 
@@ -84,7 +84,7 @@ namespace DynamicInvasions.Items {
 
 		public override void AddRecipes() {
 			var mymod = (DynamicInvasionsMod)this.mod;
-			var myrecipe = new CrossDimensionaAggregatorItemRecipe( mymod, mymod.Config.BannersPerAggregator );
+			var myrecipe = new CrossDimensionaAggregatorItemRecipe( mymod, DynamicInvasionsMod.Config.BannersPerAggregator );
 			myrecipe.AddRecipe();
 
 			var revertRecipe = new ModRecipe( mymod );
@@ -97,14 +97,13 @@ namespace DynamicInvasions.Items {
 		////////////////
 
 		public int GetFuelCost() {
-			var mymod = (DynamicInvasionsMod)this.mod;
-			if( mymod.Config.DebugModeCheat ) {
+			if( DynamicInvasionsMod.Config.DebugModeCheat ) {
 				return 0;
 			}
 
 			int uses = this.item.GetGlobalItem<AggregatorItemInfo>().Uses;
 
-			return (int)((float)(uses + 1) * mymod.Config.AggregatorFuelCostMultiplier);
+			return (int)((float)(uses + 1) * DynamicInvasionsMod.Config.AggregatorFuelCostMultiplier);
 		}
 	}
 }
