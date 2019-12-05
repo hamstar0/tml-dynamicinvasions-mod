@@ -1,4 +1,5 @@
 ﻿using HamstarHelpers.Helpers.Debug;
+using HamstarHelpers.Helpers.DotNET;
 using HamstarHelpers.Helpers.Items;
 using HamstarHelpers.Helpers.NPCs;
 using System;
@@ -38,25 +39,25 @@ namespace DynamicInvasions.Items {
 
 		////
 
-		public override int ConsumeItem( int ingredientOrRecipeGroupItemType, int numRequired ) {
-			int consumed;
-			Item consumedItem = this.MarkConsumeBannerItems( ingredientOrRecipeGroupItemType, numRequired, out consumed );
-			
-			if( consumedItem == null ) {
-				consumedItem = this.MarkConsumeMusicBoxItem( ingredientOrRecipeGroupItemType );
+		public override int ConsumeItem( int ingredientItemOrRecipeGroupItemType, int numRequired ) {
+			var bannerItemTypes = NPCBannerHelpers.GetBannerItemTypes();
+			int consumed = 0;
 
-				if( consumedItem != null ) {
-					consumed = 1;
+			if( bannerItemTypes.Contains(ingredientItemOrRecipeGroupItemType) ) {
+				this.MarkConsumeableBannerItems( numRequired, out consumed );
+			} else {
+				if( this.MarkConsumeMusicBoxItem(ingredientItemOrRecipeGroupItemType) != null ) {
+					consumed++;
 				}
 			}
 
 			if( DynamicInvasionsMod.Config.DebugModeInfo ) {
-				if( consumedItem == null ) {
+				if( consumed == 0 ) {
 					Item item = new Item();
-					item.SetDefaults( ingredientOrRecipeGroupItemType, true );
-					LogHelpers.Log( "No item consumed of ingredient/recipe group ["+ ingredientOrRecipeGroupItemType + "] ("+item.Name+")" );
+					item.SetDefaults( ingredientItemOrRecipeGroupItemType, true );
+					LogHelpers.Log( "No item consumed of ingredient/recipe group [" + ingredientItemOrRecipeGroupItemType + "] (" + item.Name + ")" );
 				} else {
-					LogHelpers.Log( "Consumed "+consumed+" of "+numRequired+" of item ["+consumedItem.type+"] ("+consumedItem.Name+")" );
+					LogHelpers.Log( "Consumed " + consumed + " of " + numRequired + " of item group type [" + ingredientItemOrRecipeGroupItemType + "]" );
 				}
 			}
 
@@ -65,41 +66,54 @@ namespace DynamicInvasions.Items {
 
 		////
 
-		private Item MarkConsumeBannerItems( int consumedItemGroupType, int numRequired, out int consumed ) {
+		private void MarkConsumeableBannerItems( int numRequired, out int consumed ) {
 			var bannerItemTypes = NPCBannerHelpers.GetBannerItemTypes();
-			if( !bannerItemTypes.Contains(consumedItemGroupType) ) {
-				consumed = 0;
-				return null;
-			}
-			
-			Item[] inv = Main.LocalPlayer.inventory;
-			Item bannerItem = inv.FirstOrDefault( ( item ) => {
-				return !(item?.IsAir ?? true)
-					&& bannerItemTypes.Contains(item.type);
-			} );
-			if( bannerItem == null ) {
-				consumed = 0;
-				return null;
-			}
 
-			this.BannerItemTypes = new List<int>();
+			int myConsumed = 0;
+			IEnumerable<int> bannerIndexes = Main.LocalPlayer.inventory
+				.SafeSelect( (item, idx) => (item, idx) )
+				.SafeWhere( (itemAndIdx) => {
+					if( myConsumed >= numRequired ) {
+						return false;
+					}
 
-			int i;
-			for( i = 0; i < bannerItem.stack; i++ ) {
-				this.BannerItemTypes.Add( bannerItem.type );
+					if( itemAndIdx.item == null || itemAndIdx.item.IsAir ) {
+						return false;
+					}
 
-				if( this.BannerItemTypes.Count >= numRequired ) {
-					break;
+					if( !bannerItemTypes.Contains(itemAndIdx.item.type) ) {
+						return false;
+					}
+
+					myConsumed += itemAndIdx.item.stack;
+					return true;
+				} )
+				.SafeSelect( (itemAndIdx) => itemAndIdx.idx );
+
+			void registerBanners( out int consumedAgain ) {
+				consumedAgain = 0;
+
+				foreach( int invIdx in bannerIndexes ) {
+					Item item = Main.LocalPlayer.inventory[invIdx];
+
+					for( int i = 0; i < item.stack; i++ ) {
+						this.BannerItemTypes.Add( item.type );
+
+						consumedAgain++;
+						if( consumedAgain >= numRequired ) {
+							return;
+						}
+					}
 				}
 			}
 
-			consumed = i;
-			return bannerItem;
+			consumed = 0;
+			registerBanners( out consumed );
 		}
 
 		private Item MarkConsumeMusicBoxItem( int consumedItemGroupType ) {
 			var musicItemTypes = MusicBoxHelpers.GetVanillaMusicBoxItemIds();
-			if( !musicItemTypes.Contains(consumedItemGroupType) ) {
+			if( !musicItemTypes.Contains( consumedItemGroupType ) ) {
 				return null;
 			}
 
@@ -107,8 +121,8 @@ namespace DynamicInvasions.Items {
 			//var musicItemTypes = MusicBoxHelpers.GetVanillaMusicBoxItemIds();
 
 			Item musicBoxItem = inv.FirstOrDefault( ( item ) => {
-				return !(item?.IsAir ?? true)
-					&& musicItemTypes.Contains(item.type);
+				return !( item?.IsAir ?? true )
+					&& musicItemTypes.Contains( item.type );
 			} );
 			this.MusicBoxItemType = musicBoxItem?.type ?? -1;
 
@@ -123,18 +137,18 @@ namespace DynamicInvasions.Items {
 				throw new Exception( "No music box given for custom invasion summon item." );
 			}
 			if( this.BannerItemTypes.Count < this.BannerCount ) {
-				throw new Exception( "Need "+this.BannerCount+" banners (of "+this.BannerItemTypes.Count+") for custom invasion summon item." );
+				throw new Exception( "Need " + this.BannerCount + " banners (of " + this.BannerItemTypes.Count + ") for custom invasion summon item." );
 			}
 
 			var itemInfo = item.GetGlobalItem<AggregatorItemInfo>();
-			
+
 			itemInfo.Initialize( this.MusicBoxItemType, this.BannerItemTypes );
 		}
 
 
 		public override bool RecipeAvailable() {
 			if( !DynamicInvasionsMod.Config.Enabled ) { return false; }
-			
+
 			return DynamicInvasionsMod.Config.CraftableAggregators;
 		}
 	}
