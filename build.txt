@@ -1,5 +1,5 @@
 author = hamstar
-version = 0.9.4.2
+version = 0.9.4.3
 displayName = Dynamic Invasions
 modReferences = HamstarHelpers@5.3.3
 buildIgnore = *.csproj, *.user, *.bat, obj\*, bin\*, .vs\*, .git\*

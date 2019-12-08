@@ -143,6 +143,9 @@ namespace DynamicInvasions.Items {
 			var itemInfo = item.GetGlobalItem<AggregatorItemInfo>();
 
 			itemInfo.Initialize( this.MusicBoxItemType, this.BannerItemTypes );
+
+			this.BannerItemTypes.Clear();
+			this.MusicBoxItemType = -1;
 		}
 
 
